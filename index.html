@@ -422,4 +422,259 @@
                     if (elapsed >= usersDB[u].duration) {
                         alert("The assigned access parameter time limit has passed.");
                         usersDB[u].permitted = false;
-                        return
+                        return;
+                    }
+                    sidebarNavigate('dashboard');
+                }
+            } else {
+                alert("Incorrect username or password configuration parameters.");
+            }
+        };
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('portal-sidebar').classList.add('hidden');
+            switchView('login');
+        }
+
+        function sidebarNavigate(target) {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            if(target === 'dashboard') {
+                document.getElementById('menu-dash-link').classList.add('active');
+                switchView('dashboard');
+            } else if(target === 'admin') {
+                document.getElementById('menu-admin-link').classList.add('active');
+                switchView('admin');
+            }
+        }
+
+        function switchView(view) {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+
+            if (view === 'login') document.getElementById('login-view').classList.remove('hidden');
+            if (view === 'admin') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                renderAdminDirectory();
+            }
+            if (view === 'dashboard') {
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                document.getElementById('student-name-display').innerText = usersDB[currentUser].fullname;
+                
+                const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
+                const remaining = Math.max(0, Math.ceil(usersDB[currentUser].duration - timePassed));
+                document.getElementById('access-expiry-notice').innerText = `Allocated Session Window Time Remaining: ${remaining} Minute(s)`;
+            }
+            if (view === 'quiz') {
+                const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
+                if(timePassed >= usersDB[currentUser].duration || !usersDB[currentUser].permitted) {
+                    alert("Session execution lifecycle timeout limit reached.");
+                    logout();
+                    return;
+                }
+                document.getElementById('quiz-view').classList.remove('hidden');
+                loadQuestion();
+            }
+            if (view === 'results') {
+                document.getElementById('results-view').classList.remove('hidden');
+                renderResultsDisplay();
+            }
+        }
+
+        // Test Core Execution Infrastructure Loops
+        document.getElementById('openQuestions').addEventListener('click', () => {
+            currentIdx = 0;
+            currentQuizScore = 0;
+            localUserAnswers = [];
+            switchView('quiz');
+        });
+        document.getElementById('checkResults').addEventListener('click', () => switchView('results'));
+        document.getElementById('back-to-dash').addEventListener('click', () => switchView('dashboard'));
+
+        function loadQuestion() {
+            if (currentIdx >= quizQuestions.length) {
+                usersDB[currentUser].score = currentQuizScore;
+                usersDB[currentUser].logs = [...localUserAnswers];
+                switchView('results');
+                return;
+            }
+
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+            
+            let checkedRadio = document.querySelector('input[name="quiz-option"]:checked');
+            if(checkedRadio) checkedRadio.checked = false;
+
+            const qData = quizQuestions[currentIdx];
+            document.getElementById('progress-text').innerText = `Question ${currentIdx + 1} of ${quizQuestions.length}`;
+            document.getElementById('question-text').innerText = qData.question;
+            
+            toggleOptionVisibility('opt-a', qData.a);
+            toggleOptionVisibility('opt-b', qData.b);
+            toggleOptionVisibility('opt-c', qData.c);
+            toggleOptionVisibility('opt-d', qData.d);
+        }
+
+        function toggleOptionVisibility(id, val) {
+            const span = document.getElementById(id);
+            const label = span.parentElement;
+            if(val && val.trim() !== "") {
+                span.innerText = val;
+                label.classList.remove('hidden');
+            } else {
+                label.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const selected = document.querySelector('input[name="quiz-option"]:checked');
+            if (!selected) { alert("Please make a selection first."); return; }
+
+            const currentAnswer = selected.value;
+            const correctAnswer = quizQuestions[currentIdx].answer.toLowerCase();
+            const isCorrect = (currentAnswer === correctAnswer);
+            const fb = document.getElementById('feedback');
+
+            fb.classList.remove('hidden', 'correct', 'wrong');
+            if (isCorrect) {
+                fb.innerText = "Correct!"; fb.classList.add('correct'); currentQuizScore++;
+            } else {
+                fb.innerText = `Incorrect. The correct answer was (${correctAnswer.toUpperCase()})`; fb.classList.add('wrong');
+            }
+
+            localUserAnswers[currentIdx] = {
+                num: currentIdx + 1,
+                question: quizQuestions[currentIdx].question,
+                chosen: currentAnswer.toUpperCase(),
+                correct: correctAnswer.toUpperCase(),
+                status: isCorrect
+            };
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => { currentIdx++; loadQuestion(); });
+
+        function renderResultsDisplay() {
+            const disp = document.getElementById('score-display');
+            const tbody = document.getElementById('summary-table-body');
+            const targetArray = (usersDB[currentUser].logs && usersDB[currentUser].logs.length > 0) ? usersDB[currentUser].logs : localUserAnswers;
+
+            if (targetArray.length === 0) {
+                disp.innerText = "No results to display.";
+                document.getElementById('review-section').classList.add('hidden');
+                return;
+            }
+            document.getElementById('review-section').classList.remove('hidden');
+            const pct = Math.round((usersDB[currentUser].score / targetArray.length) * 100);
+            disp.innerHTML = `Score: <strong>${usersDB[currentUser].score} / ${quizQuestions.length}</strong> correct (${pct}%)`;
+
+            tbody.innerHTML = "";
+            targetArray.forEach(ans => {
+                if(!ans) return;
+                tbody.innerHTML += `<tr>
+                    <td>${ans.num}</td>
+                    <td>${ans.question}</td>
+                    <td><strong>(${ans.chosen})</strong></td>
+                    <td><strong>(${ans.correct})</strong></td>
+                    <td><span class="badge ${ans.status?'badge-success':'badge-danger'}">${ans.status?'Correct':'Wrong'}</span></td>
+                </tr>`;
+            });
+        }
+
+        // Space Administration Business Logical Layer Rules
+        document.getElementById('admin-create-user').addEventListener('click', () => {
+            const name = document.getElementById('admin-user-fullname').value.trim();
+            const username = document.getElementById('admin-user-username').value.trim();
+            const pass = document.getElementById('admin-user-pass').value;
+            const mins = parseInt(document.getElementById('admin-user-time').value) || 60;
+
+            if(!name || !username || !pass) { alert("Please complete all input fields!"); return; }
+            
+            usersDB[username] = {
+                password: pass,
+                role: "student",
+                fullname: name,
+                permitted: true,
+                duration: mins,
+                startTime: null,
+                score: null,
+                logs: []
+            };
+
+            document.getElementById('admin-user-fullname').value = '';
+            document.getElementById('admin-user-username').value = '';
+            document.getElementById('admin-user-pass').value = '';
+
+            alert(`User profile created for '${name}'.`);
+            renderAdminDirectory();
+        });
+
+        function toggleAccess(user) {
+            usersDB[user].permitted = !usersDB[user].permitted;
+            renderAdminDirectory();
+        }
+
+        function resetPassword(user) {
+            const newPass = prompt(`Enter new password for ${user}:`);
+            if (newPass && newPass.trim() !== "") {
+                usersDB[user].password = newPass.trim();
+                alert("Password updated successfully.");
+            }
+        }
+
+        function deleteUser(user) {
+            if (confirm(`Delete user ${user}?`)) {
+                delete usersDB[user];
+                renderAdminDirectory();
+            }
+        }
+
+        function viewUserResults(user) {
+            if (usersDB[user].score === null) { 
+                alert("This user has not completed a test session yet."); 
+                return; 
+            }
+            alert(`Results for ${usersDB[user].fullname}: ${usersDB[user].score} / ${quizQuestions.length}`);
+        }
+
+        function renderAdminDirectory() {
+            const tbody = document.getElementById('admin-directory-body');
+            tbody.innerHTML = "";
+            Object.keys(usersDB).forEach(key => {
+                if(usersDB[key].role === 'admin') return;
+                const uData = usersDB[key];
+                
+                let timeString = "Not Triggered";
+                if(uData.startTime) {
+                    const elapsed = (Date.now() - uData.startTime) / 60000;
+                    timeString = elapsed >= uData.duration ? "Expired" : `${Math.ceil(uData.duration - elapsed)} mins left`;
+                } else {
+                    timeString = `${uData.duration} mins`;
+                }
+
+                const pBadge = uData.permitted ? `<span class="badge badge-success">Active</span>` : `<span class="badge badge-danger">Revoked</span>`;
+
+                tbody.innerHTML += `<tr>
+                    <td>${uData.fullname}</td>
+                    <td><strong>${key}</strong></td>
+                    <td>${timeString}</td>
+                    <td>${pBadge}</td>
+                    <td style="text-align: right;">
+                        <button class="btn btn-warning" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="resetPassword('${key}')">Reset Password</button>
+                        <button class="btn ${uData.permitted?'btn-secondary':'btn-success'}" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="toggleAccess('${key}')">
+                            ${uData.permitted?'Deactivate':'Activate'}
+                        </button>
+                        <button class="btn btn-danger" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="deleteUser('${key}')">Delete</button>
+                        <button class="btn" style="padding:6px 10px; font-size:12px;" onclick="viewUserResults('${key}')">View Log</button>
+                    </td>
+                </tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
