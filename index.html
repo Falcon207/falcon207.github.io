@@ -13,6 +13,9 @@
             --danger: #ef4444;
             --danger-hover: #dc2626;
             --warning: #f59e0b;
+            --warning-bg: #fffbeb;
+            --warning-border: #fef3c7;
+            --warning-text: #b45309;
             --dark-sidebar: #1e1e2f;
             --body-bg: #eef1f5;
             --card-bg: #ffffff;
@@ -277,7 +280,7 @@
             border-top: 1px solid var(--border);
         }
 
-        /* NEW CREDENTIAL MODAL POPUP BACKDROP OVERLAY */
+        /* POPUP MODAL & ACCORDION BLOCKS */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -292,7 +295,7 @@
             background-color: white;
             padding: 30px;
             border-radius: 12px;
-            max-width: 460px;
+            max-width: 480px;
             width: 90%;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
         }
@@ -306,15 +309,30 @@
             align-items: center;
             margin-bottom: 15px;
         }
+        .alert-warning-banner {
+            background-color: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: var(--warning-text);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
     <div id="credential-modal" class="modal-overlay hidden">
         <div class="modal-box">
-            <h3 style="margin-top: 0; font-size: 20px; color: var(--success);">Candidate Profile Provisioned!</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Here are your credentials. Click copy buttons to instantly save values:</p>
+            <h3 style="margin-top: 0; font-size: 20px; color: var(--success); margin-bottom: 5px;">Candidate Profile Provisioned!</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Review and store secure registration records securely.</p>
             
+            <button class="btn btn-success" style="width: 100%; margin-bottom: 20px; padding: 12px;" onclick="copyAllCredentialsText()">
+                📋 Copy All 3 Lines
+            </button>
+
             <label style="margin-bottom:4px;">Username</label>
             <div class="copy-row">
                 <span id="modal-display-user" style="font-family: monospace; font-size: 15px; font-weight: 700;"></span>
@@ -327,7 +345,11 @@
                 <button class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="copyFieldText('modal-display-pass')">Copy</button>
             </div>
 
-            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="closeCredentialModal()">Close Window</button>
+            <div class="alert-warning-banner">
+                ⚠️ <strong>Notice:</strong> Once you close this dialog the password is gone for good.
+            </div>
+
+            <button class="btn btn-danger" style="width: 100%;" onclick="closeCredentialModal()">Close Window</button>
         </div>
     </div>
 
@@ -624,7 +646,6 @@
                 const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
                 const remaining = Math.max(0, Math.ceil(usersDB[currentUser].duration - timePassed));
                 
-                // Formatted display showing clean remaining time logic values
                 if(remaining > 1440) {
                     document.getElementById('access-expiry-notice').innerText = `Allocated Session Window Time Remaining: ${Math.round(remaining/1440)} Day(s)`;
                 } else {
@@ -797,7 +818,6 @@
             }
         }
 
-        // --- NEW HELPER FUNCTIONS FOR RANDOM ACCOUNT PROFILE PROVISIONING ---
         function generateRandomString(length, pool) {
             let result = '';
             for (let i = 0; i < length; i++) {
@@ -813,18 +833,15 @@
 
             if(!name) { alert("Please input the candidate's Full Legal Name!"); return; }
             
-            // Clean format name base prefix handler (lowercase, alphanumeric characters only)
             let cleanBase = name.toLowerCase().replace(/[^a-z0-9]/g, "");
             if(!cleanBase) cleanBase = "user";
             
-            // Generate exact matches matching criteria matching criteria rule string patterns
             const randomUserSuffix = generateRandomString(6, 'abcdefghijklmnopqrstuvwxyz');
             const generatedUsername = `${cleanBase}_${randomUserSuffix}`;
             
             const passwordPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             const generatedPassword = generateRandomString(12, passwordPool);
             
-            // Convert days dynamically into runtime calculation minutes array matrices profiles
             const calculatedMinutes = days * 24 * 60;
 
             usersDB[generatedUsername] = {
@@ -839,16 +856,30 @@
                 logs: []
             };
 
-            // Reset Input Values Clear
             document.getElementById('admin-user-fullname').value = '';
             document.getElementById('admin-user-email').value = '';
             document.getElementById('admin-user-days').value = '1';
 
-            // Launch custom popup screen matrix
+            // Load values to popup variables
             document.getElementById('modal-display-user').innerText = generatedUsername;
             document.getElementById('modal-display-pass').innerText = generatedPassword;
             document.getElementById('credential-modal').classList.remove('hidden');
         };
+
+        // --- NEW ONE-CLICK MULTILINE COPY ENGINE ---
+        function copyAllCredentialsText() {
+            const user = document.getElementById('modal-display-user').innerText;
+            const pass = document.getElementById('modal-display-pass').innerText;
+            
+            // Constructs the 3-line chunk exactly as requested
+            const fullBlockText = `Here are your credentials:\nusername: ${user}\npassword: ${pass}`;
+            
+            navigator.clipboard.writeText(fullBlockText).then(() => {
+                alert("All 3 lines copied to clipboard successfully!");
+            }).catch(err => {
+                alert("Failed to copy text sequence layout variables.");
+            });
+        }
 
         function copyFieldText(elementId) {
             const textToCopy = document.getElementById(elementId).innerText;
