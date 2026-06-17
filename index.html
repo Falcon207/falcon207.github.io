@@ -1,557 +1,274 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Administração - Portal de Testes</title>
+    <title>Admin Dashboard - Test Portal</title>
     <style>
         :root {
-            --primary: #0076ff;
-            --primary-hover: #0056b3;
-            --success: #28a745;
-            --success-hover: #1e7e34;
-            --danger: #dc3545;
-            --danger-hover: #bd2130;
-            --warning: #ffc107;
-            --warning-hover: #e0a800;
-            --dark: #1a2a3a;
-            --gray-bg: #f4f6f9;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --dark-sidebar: #1e1e2f;
+            --body-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
             --border: #e2e8f0;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--gray-bg);
+            background-color: var(--body-bg);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-main);
+        }
+
+        /* SIDEBAR STYLING */
+        .sidebar {
+            width: 260px;
+            background-color: var(--dark-sidebar);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-brand {
+            padding: 10px 25px 25px 25px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 20px 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-item a {
+            display: flex;
             align-items: center;
-            min-height: 95vh;
+            padding: 14px 25px;
+            color: #b4c6ef;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar-item.active a, .sidebar-item a:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        /* MAIN CONTENT CONTAINERS */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            box-sizing: border-box;
+            background-color: var(--body-bg);
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
         .card {
-            background-color: white;
+            background-color: var(--card-bg);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            max-width: 600px;
-            width: 100%;
-            box-sizing: border-box;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
         }
 
-        .wide-card { max-width: 1100px; }
-        h1, h2, h3 { color: var(--dark); margin-top: 0; }
-        
-        /* Forms & Inputs */
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
+        .hidden { display: none !important; }
+
+        /* GRID FOR LAYOUT */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            align-items: start;
         }
+
+        @media (max-width: 992px) {
+            .admin-grid { grid-template-columns: 1fr; }
+            body { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
+
+        /* FORMS & INPUTS */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 600;
-            color: #4a5568;
-            font-size: 14px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
         }
+
         input[type="text"], input[type="password"], input[type="number"], select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             box-sizing: border-box;
             font-size: 14px;
-            transition: border-color 0.2s;
+            background-color: #f8fafc;
+            transition: all 0.2s;
         }
+
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        
-        /* Buttons */
-        .btn-wrapper { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+
+        /* BUTTONS */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 16px;
+            padding: 11px 20px;
             background-color: var(--primary);
             color: white;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.2s;
-            text-align: center;
+            transition: all 0.2s;
         }
-        .btn:hover { background-color: var(--primary-hover); }
+
+        .btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
         .btn-success { background-color: var(--success); }
         .btn-success:hover { background-color: var(--success-hover); }
         .btn-danger { background-color: var(--danger); }
         .btn-danger:hover { background-color: var(--danger-hover); }
-        .btn-warning { background-color: var(--warning); color: #212529; }
-        .btn-warning:hover { background-color: var(--warning-hover); }
-        .btn-secondary { background-color: #6c757d; }
-        .btn-secondary:hover { background-color: #545b62; }
-        
-        .hidden { display: none !important; }
-        
-        /* Layout Structuring */
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 25px;
-            margin-top: 20px;
-        }
-        @media (max-width: 850px) {
-            .admin-grid { grid-template-columns: 1fr; }
-        }
+        .btn-secondary { background-color: #64748b; }
+        .btn-secondary:hover { background-color: #475569; }
 
-        .section-box {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        /* Tables */
-        .admin-table {
+        /* TABLES */
+        .panel-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             text-align: left;
         }
-        .admin-table th, .admin-table td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
-        .admin-table th { background-color: #f8fafc; color: #475569; font-weight: 600; }
-        
-        /* Badges */
-        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-        .badge-success { background-color: #d4edda; color: #155724; }
-        .badge-danger { background-color: #f8d7da; color: #721c24; }
 
-        /* Quiz UI Elements */
-        .options-container { margin: 20px 0; }
+        .panel-table th, .panel-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-table th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-table tbody tr:hover { background-color: #f8fafc; }
+
+        /* BADGES */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .badge-success { background-color: #d1fae5; color: #065f46; }
+        .badge-danger { background-color: #fee2e2; color: #991b1b; }
+
+        /* QUIZ STYLING */
         .option-label {
             display: block;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
+            padding: 16px;
+            margin-bottom: 12px;
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
             border-radius: 8px;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .option-label:hover { background-color: #e8f0fe; border-color: var(--primary); }
-        .option-label input { margin-right: 10px; }
-        #feedback { padding: 12px; border-radius: 6px; font-weight: 600; text-align: center; margin-top: 15px; }
-        .correct { background-color: #d4edda; color: #155724; }
-        .wrong { background-color: #f8d7da; color: #721c24; }
+        .option-label:hover { background-color: #f0fdf4; border-color: var(--success); }
+        .option-label input { margin-right: 12px; transform: scale(1.1); }
+        #feedback { padding: 16px; border-radius: 8px; font-weight: 600; text-align: center; margin-top: 20px; }
+        .correct { background-color: #d1fae5; color: #065f46; }
+        .wrong { background-color: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body>
 
-    <div id="login-view" class="card">
-        <h2>Iniciar Sessão</h2>
-        <p style="color:#64748b; margin-bottom:20px; font-size: 14px;">Introduza as suas credenciais para aceder ao portal.</p>
-        <div class="form-group">
-            <label>Utilizador / Username</label>
-            <input type="text" id="login-username" placeholder="Ex: admin ou student1">
-        </div>
-        <div class="form-group">
-            <label>Palavra-passe / Password</label>
-            <input type="password" id="login-password" placeholder="Introduza a password">
-        </div>
-        <button class="btn" style="width: 100%;" id="btn-login">Entrar</button>
-    </div>
-
-    <div id="dashboard-view" class="card hidden">
-        <h1>Olá, <span id="student-name-display">Estudante</span>!</h1>
-        <p id="access-expiry-notice" style="font-size:14px; color:#ef4444; font-weight:600;"></p>
-        <div class="btn-wrapper">
-            <button class="btn" id="openQuestions">Iniciar Teste</button>
-            <button class="btn btn-success" id="checkResults">Ver Meus Resultados</button>
-            <button class="btn btn-secondary" onclick="logout()">Sair</button>
+    <div id="portal-sidebar" class="sidebar hidden">
+        <div class="sidebar-brand">Test Portal</div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item active" id="menu-dash-link"><a onclick="sidebarNavigate('dashboard')">Dashboard</a></li>
+            <li class="sidebar-item hidden" id="menu-admin-link"><a onclick="sidebarNavigate('admin')">User Directory</a></li>
+        </ul>
+        <div style="padding: 20px;">
+            <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Sign Out</button>
         </div>
     </div>
 
-    <div id="quiz-view" class="card hidden">
-        <div id="progress-text" style="font-size:14px; color:#6c757d; font-weight:bold; margin-bottom:10px;">Pergunta 1 de 17</div>
-        <h2 id="question-text" style="font-size:18px; line-height:1.4;">Carregando pergunta...</h2>
-        
-        <div class="options-container">
-            <label class="option-label"><input type="radio" name="quiz-option" value="a"> (A) <span id="opt-a"></span></label>
-            <label class="option-label"><input type="radio" name="quiz-option" value="b"> (B) <span id="opt-b"></span></label>
-            <label class="option-label"><input type="radio" name="quiz-option" value="c"> (C) <span id="opt-c"></span></label>
-            <label class="option-label"><input type="radio" name="quiz-option" value="d"> (D) <span id="opt-d"></span></label>
-        </div>
-        <div id="feedback" class="hidden"></div>
-        <button class="btn" style="width:100%; margin-top:15px;" id="submit-btn">Submeter Resposta</button>
-        <button class="btn btn-success hidden" style="width:100%; margin-top:15px;" id="next-btn">Próxima Pergunta</button>
-    </div>
+    <div class="main-content">
+        <div class="container">
 
-    <div id="results-view" class="card wide-card hidden">
-        <h2>Resumo de Desempenho</h2>
-        <p style="font-size: 16px; margin: 10px 0;" id="score-display"></p>
-        
-        <div id="review-section">
-            <h3 style="margin-top:20px;">Revisão de Perguntas</h3>
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th style="width:5%">#</th>
-                        <th>Pergunta</th>
-                        <th style="width:15%">Sua Escolha</th>
-                        <th style="width:15%">Correta</th>
-                        <th style="width:10%">Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="summary-table-body"></tbody>
-            </table>
-        </div>
-        <button class="btn btn-secondary" style="margin-top:20px;" id="back-to-dash">Voltar ao Painel</button>
-    </div>
-
-    <div id="admin-view" class="card wide-card hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom:15px;">
-            <h2>Painel de Administração</h2>
-            <button class="btn btn-danger" style="padding:6px 12px; font-size:13px;" onclick="logout()">Terminar Sessão</button>
-        </div>
-
-        <div class="admin-grid">
-            <div class="section-box">
-                <h3 style="font-size:16px; margin-bottom:15px;">Criar Utilizador</h3>
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="admin-user-fullname" placeholder="Nome do utilizador">
-                </div>
+            <div id="login-view" class="card" style="max-width: 480px; margin: 60px auto 0 auto;">
+                <h2 style="font-size: 24px; margin-bottom: 8px;">Portal Login</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">Please authenticate to access assignments.</p>
+                
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" id="admin-user-username" placeholder="Username de login">
+                    <input type="text" id="login-username" placeholder="Username">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="admin-user-pass" placeholder="Password de acesso">
+                    <input type="password" id="login-password" placeholder="••••••••">
                 </div>
-                <div class="form-group">
-                    <label>Tempo de Acesso (Minutos)</label>
-                    <input type="number" id="admin-user-time" value="60" min="1">
-                </div>
-                <button class="btn btn-success" style="width:100%;" id="admin-create-user">Adicionar Utilizador</button>
+                <button class="btn" style="width: 100%; margin-top: 10px;" id="btn-login">Sign In</button>
             </div>
 
-            <div class="section-box">
-                <h3 style="font-size:16px; margin-bottom:15px;">Lista de Utilizadores</h3>
-                <div style="overflow-x: auto;">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Username</th>
-                                <th>Tempo Restante</th>
-                                <th>Estado</th>
-                                <th style="text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-directory-body"></tbody>
-                    </table>
+            <div id="dashboard-view" class="hidden">
+                <div class="top-bar">
+                    <div>
+                        <h1 style="margin: 0; font-size: 28px;">Welcome back, <span id="student-name-display">Student</span>!</h1>
+                        <p id="access-expiry-notice" style="margin: 5px 0 0 0; color: var(--danger); font-weight: 600; font-size: 14px;"></p>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <script src="questions.js"></script>
-    <script>
-        // Simulated Local Storage Database
-        let usersDB = {
-            "admin": { password: "admin123", role: "admin", fullname: "Administrador" },
-            "student1": { password: "password123", role: "student", fullname: "Carlos Silva", permitted: true, duration: 60, startTime: null, score: null, logs: [] }
-        };
-
-        let currentUser = null;
-        let currentIdx = 0;
-        let currentQuizScore = 0;
-        let localUserAnswers = [];
-
-        // Auth Logic Engine with explicit file sanity validator checks
-        document.getElementById('btn-login').addEventListener('click', () => {
-            if (typeof quizQuestions === 'undefined') {
-                alert("ERRO CRÍTICO: O arquivo 'questions.js' não foi carregado corretamente ou contém erros de sintaxe! Verifique se ele existe e não tem erros de parênteses/chaves.");
-                return;
-            }
-
-            const u = document.getElementById('login-username').value.trim();
-            const p = document.getElementById('login-password').value;
-
-            if (!u || !p) {
-                alert("Por favor, preencha o utilizador e a password!");
-                return;
-            }
-
-            if (usersDB[u] && usersDB[u].password === p) {
-                currentUser = u;
-                document.getElementById('login-username').value = '';
-                document.getElementById('login-password').value = '';
-                
-                if (usersDB[u].role === 'admin') {
-                    switchView('admin');
-                } else {
-                    if (!usersDB[u].permitted) {
-                        alert("O seu acesso foi desativado pelo administrador.");
-                        return;
-                    }
-                    if (usersDB[u].startTime === null) {
-                        usersDB[u].startTime = Date.now();
-                    }
-                    const elapsed = (Date.now() - usersDB[u].startTime) / 60000;
-                    if (elapsed >= usersDB[u].duration) {
-                        alert("O seu tempo limite de acesso expirou.");
-                        usersDB[u].permitted = false;
-                        return;
-                    }
-                    switchView('student-dash');
-                }
-            } else {
-                alert("Utilizador ou password incorretos!");
-            }
-        });
-
-        function logout() {
-            currentUser = null;
-            switchView('login');
-        }
-
-        function switchView(view) {
-            document.getElementById('login-view').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.add('hidden');
-            document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('results-view').classList.add('hidden');
-            document.getElementById('admin-view').classList.add('hidden');
-
-            if (view === 'login') document.getElementById('login-view').classList.remove('hidden');
-            if (view === 'admin') {
-                document.getElementById('admin-view').classList.remove('hidden');
-                renderAdminDirectory();
-            }
-            if (view === 'student-dash') {
-                document.getElementById('dashboard-view').classList.remove('hidden');
-                document.getElementById('student-name-display').innerText = usersDB[currentUser].fullname;
-                
-                const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
-                const remaining = Math.max(0, Math.ceil(usersDB[currentUser].duration - timePassed));
-                document.getElementById('access-expiry-notice').innerText = `Tempo de sessão restante: ${remaining} Minuto(s)`;
-            }
-            if (view === 'quiz') {
-                const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
-                if(timePassed >= usersDB[currentUser].duration || !usersDB[currentUser].permitted) {
-                    alert("O seu tempo expirou!");
-                    logout();
-                    return;
-                }
-                document.getElementById('quiz-view').classList.remove('hidden');
-                loadQuestion();
-            }
-            if (view === 'results') {
-                document.getElementById('results-view').classList.remove('hidden');
-                renderResultsDisplay();
-            }
-        }
-
-        // Quiz Engine
-        document.getElementById('openQuestions').addEventListener('click', () => {
-            currentIdx = 0;
-            currentQuizScore = 0;
-            localUserAnswers = [];
-            switchView('quiz');
-        });
-        document.getElementById('checkResults').addEventListener('click', () => switchView('results'));
-        document.getElementById('back-to-dash').addEventListener('click', () => switchView('student-dash'));
-
-        function loadQuestion() {
-            if (currentIdx >= quizQuestions.length) {
-                usersDB[currentUser].score = currentQuizScore;
-                usersDB[currentUser].logs = [...localUserAnswers];
-                switchView('results');
-                return;
-            }
-
-            document.getElementById('feedback').classList.add('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('submit-btn').classList.remove('hidden');
-            
-            let checkedRadio = document.querySelector('input[name="quiz-option"]:checked');
-            if(checkedRadio) checkedRadio.checked = false;
-
-            const qData = quizQuestions[currentIdx];
-            document.getElementById('progress-text').innerText = `Pergunta ${currentIdx + 1} de ${quizQuestions.length}`;
-            document.getElementById('question-text').innerText = qData.question;
-            
-            // Validate and hide empty options dynamically
-            toggleOptionVisibility('opt-a', qData.a);
-            toggleOptionVisibility('opt-b', qData.b);
-            toggleOptionVisibility('opt-c', qData.c);
-            toggleOptionVisibility('opt-d', qData.d);
-        }
-
-        function toggleOptionVisibility(id, val) {
-            const span = document.getElementById(id);
-            const label = span.parentElement;
-            if(val && val.trim() !== "") {
-                span.innerText = val;
-                label.classList.remove('hidden');
-            } else {
-                label.classList.add('hidden');
-            }
-        }
-
-        document.getElementById('submit-btn').addEventListener('click', () => {
-            const selected = document.querySelector('input[name="quiz-option"]:checked');
-            if (!selected) { alert("Por favor, selecione uma opção!"); return; }
-
-            const currentAnswer = selected.value;
-            const correctAnswer = quizQuestions[currentIdx].answer.toLowerCase();
-            const isCorrect = (currentAnswer === correctAnswer);
-            const fb = document.getElementById('feedback');
-
-            fb.classList.remove('hidden', 'correct', 'wrong');
-            if (isCorrect) {
-                fb.innerText = "Resposta Correta!"; fb.classList.add('correct'); currentQuizScore++;
-            } else {
-                fb.innerText = `Incorreta. A resposta certa era (${correctAnswer.toUpperCase()})`; fb.classList.add('wrong');
-            }
-
-            localUserAnswers[currentIdx] = {
-                num: currentIdx + 1,
-                question: quizQuestions[currentIdx].question,
-                chosen: currentAnswer.toUpperCase(),
-                correct: correctAnswer.toUpperCase(),
-                status: isCorrect
-            };
-            document.getElementById('submit-btn').classList.add('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
-        });
-
-        document.getElementById('next-btn').addEventListener('click', () => { currentIdx++; loadQuestion(); });
-
-        function renderResultsDisplay() {
-            const disp = document.getElementById('score-display');
-            const tbody = document.getElementById('summary-table-body');
-            const targetArray = (usersDB[currentUser].logs && usersDB[currentUser].logs.length > 0) ? usersDB[currentUser].logs : localUserAnswers;
-
-            if (targetArray.length === 0) {
-                disp.innerText = "Nenhum teste foi realizado ainda.";
-                document.getElementById('review-section').classList.add('hidden');
-                return;
-            }
-            document.getElementById('review-section').classList.remove('hidden');
-            const pct = Math.round((usersDB[currentUser].score / targetArray.length) * 100);
-            disp.innerHTML = `Pontuação Final: <strong>${usersDB[currentUser].score} / ${quizQuestions.length}</strong> certas (${pct}%)`;
-
-            tbody.innerHTML = "";
-            targetArray.forEach(ans => {
-                if(!ans) return;
-                tbody.innerHTML += `<tr>
-                    <td>${ans.num}</td>
-                    <td>${ans.question}</td>
-                    <td><strong>(${ans.chosen})</strong></td>
-                    <td><strong>(${ans.correct})</strong></td>
-                    <td><span class="badge ${ans.status?'badge-success':'badge-danger'}">${ans.status?'Certa':'Errada'}</span></td>
-                </tr>`;
-            });
-        }
-
-        // Admin Dash Operations
-        document.getElementById('admin-create-user').addEventListener('click', () => {
-            const name = document.getElementById('admin-user-fullname').value.trim();
-            const username = document.getElementById('admin-user-username').value.trim();
-            const pass = document.getElementById('admin-user-pass').value;
-            const mins = parseInt(document.getElementById('admin-user-time').value) || 60;
-
-            if(!name || !username || !pass) { alert("Preencha todos os campos!"); return; }
-            
-            usersDB[username] = {
-                password: pass,
-                role: "student",
-                fullname: name,
-                permitted: true,
-                duration: mins,
-                startTime: null,
-                score: null,
-                logs: []
-            };
-
-            document.getElementById('admin-user-fullname').value = '';
-            document.getElementById('admin-user-username').value = '';
-            document.getElementById('admin-user-pass').value = '';
-
-            alert(`Utilizador '${name}' adicionado com sucesso.`);
-            renderAdminDirectory();
-        });
-
-        function toggleAccess(user) {
-            usersDB[user].permitted = !usersDB[user].permitted;
-            renderAdminDirectory();
-        }
-
-        function resetPassword(user) {
-            const newPass = prompt(`Introduza a nova password para o utilizador ${user}:`);
-            if (newPass && newPass.trim() !== "") {
-                usersDB[user].password = newPass.trim();
-                alert("Password redefinida com sucesso!");
-            }
-        }
-
-        function deleteUser(user) {
-            if (confirm(`Tem a certeza que deseja eliminar o utilizador ${user}?`)) {
-                delete usersDB[user];
-                renderAdminDirectory();
-            }
-        }
-
-        function viewUserResults(user) {
-            if (usersDB[user].score === null) { 
-                alert("Este utilizador ainda não concluiu o teste."); 
-                return; 
-            }
-            alert(`Resultados de ${usersDB[user].fullname}: ${usersDB[user].score} / ${quizQuestions.length} Respostas Corretas.`);
-        }
-
-        function renderAdminDirectory() {
-            const tbody = document.getElementById('admin-directory-body');
-            tbody.innerHTML = "";
-            Object.keys(usersDB).forEach(key => {
-                if(usersDB[key].role === 'admin') return;
-                const uData = usersDB[key];
-                
-                let timeString = "Não Iniciado";
-                if(uData.startTime) {
-                    const elapsed = (Date.now() - uData.startTime) / 60000;
-                    timeString = elapsed >= uData.duration ? "Expirado" : `${Math.ceil(uData.duration - elapsed)} min rest.`;
-                } else {
-                    timeString = `${uData.duration} min atrib.`;
-                }
-
-                const pBadge = uData.permitted ? `<span class="badge badge-success">Ativo</span>` : `<span class="badge badge-danger">Inativo</span>`;
-
-                tbody.innerHTML += `<tr>
-                    <td>${uData.fullname}</td>
-                    <td><strong>${key}</strong></td>
-                    <td>${timeString}</td>
-                    <td>${pBadge}</td>
-                    <td style="text-align: center;">
-                        <button class="btn btn-warning" style="padding:4px 8px; font-size:11px; margin-right:2px;" onclick="resetPassword('${key}')">Reset Password</button>
-                        <button class="btn ${uData.permitted?'btn-secondary':'btn-success'}" style="padding:4px 8px; font-size:11px; margin-right:2px;" onclick="toggleAccess('${key}')">
-                            ${uData.permitted?'Desativar':'Ativar'}
-                        </button>
-                        <button class="btn btn-danger" style="padding:4px 8px; font-size:11px; margin-right:2px;" onclick="deleteUser('${key}')">Eliminar</button>
-                        <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="viewUserResults('${key}')">Ver Resultados</button>
-                    </td>
-                </tr>`;
-            });
-        }
-    </script>
-</body>
-</html>
+                <div class="card">
+                    <h3>Available Evaluations</h3>
+                    <p
