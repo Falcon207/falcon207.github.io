@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Student Dashboard & Test Portal</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f4f8;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 90vh;
         }
-        .dashboard-container {
+        .card {
             background-color: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            text-align: center;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
+            box-sizing: border-box;
         }
-        h1 {
+        h1, h2 {
             color: #1a2a3a;
-            margin-bottom: 30px;
-            font-size: 24px;
+            margin-top: 0;
         }
         .btn-wrapper {
             display: flex;
             flex-direction: column;
             gap: 15px;
+            margin-top: 20px;
         }
         .btn {
             display: block;
@@ -43,27 +43,61 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 16px;
-            transition: background-color 0.2s, transform 0.1s;
             border: none;
             cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
         }
-        .btn:hover {
-            background-color: #0056b3;
+        .btn:hover { background-color: #0056b3; }
+        .btn-secondary { background-color: #28a745; }
+        .btn-secondary:hover { background-color: #1e7e34; }
+        .btn-back { background-color: #6c757d; margin-top: 20px; }
+        .btn-back:hover { background-color: #545b62; }
+        
+        .hidden { display: none !important; }
+        
+        /* Quiz Styling */
+        .options-container {
+            margin: 20px 0;
+            text-align: left;
         }
-        .btn:active {
-            transform: scale(0.98);
+        .option-label {
+            display: block;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .btn-secondary {
-            background-color: #28a745;
+        .option-label:hover {
+            background-color: #e8f0fe;
+            border-color: #0076ff;
         }
-        .btn-secondary:hover {
-            background-color: #1e7e34;
+        .option-label input {
+            margin-right: 10px;
+        }
+        #feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .correct { background-color: #d4edda; color: #155724; }
+        .wrong { background-color: #f8d7da; color: #721c24; }
+        #progress-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
+    <div id="dashboard-view" class="card">
         <h1>Student Dashboard</h1>
         <div class="btn-wrapper">
             <button class="btn" id="openQuestions">Open Test Question</button>
@@ -71,5 +105,129 @@
         </div>
     </div>
 
+    <div id="quiz-view" class="card hidden">
+        <div id="progress-text">Question 1 of 95</div>
+        <h2 id="question-text">Question Placeholder text?</h2>
+        
+        <div class="options-container">
+            <label class="option-label"><input type="radio" name="quiz-option" value="a"> <span id="opt-a">Option A</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="b"> <span id="opt-b">Option B</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="c"> <span id="opt-c">Option C</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="d"> <span id="opt-d">Option D</span></label>
+        </div>
+
+        <div id="feedback" class="hidden"></div>
+
+        <button class="btn" id="submit-btn">Submit Answer</button>
+        <button class="btn btn-secondary hidden" id="next-btn">Next Question</button>
+    </div>
+
+    <div id="results-view" class="card hidden">
+        <h2>Your Performance Profile</h2>
+        <p style="font-size: 18px; margin: 20px 0;" id="score-display">You haven't taken the test yet.</p>
+        <button class="btn btn-back" id="back-to-dash">Back to Dashboard</button>
+    </div>
+
+    <script src="questions.js"></script>
+
+    <script>
+        let currentIdx = 0;
+        let score = 0;
+        let answersLogged = 0;
+
+        // View DOM Nodes
+        const dashView = document.getElementById('dashboard-view');
+        const quizView = document.getElementById('quiz-view');
+        const resultsView = document.getElementById('results-view');
+
+        // Buttons
+        document.getElementById('openQuestions').addEventListener('click', () => switchView('quiz'));
+        document.getElementById('checkResults').addEventListener('click', () => switchView('results'));
+        document.getElementById('back-to-dash').addEventListener('click', () => switchView('dash'));
+
+        function switchView(view) {
+            dashView.classList.add('hidden');
+            quizView.classList.add('hidden');
+            resultsView.classList.add('hidden');
+
+            if (view === 'dash') dashView.classList.remove('hidden');
+            if (view === 'quiz') {
+                quizView.classList.remove('hidden');
+                loadQuestion();
+            }
+            if (view === 'results') {
+                resultsView.classList.remove('hidden');
+                updateResultsDisplay();
+            }
+        }
+
+        function loadQuestion() {
+            if (currentIdx >= quizQuestions.length) {
+                // Quiz completed
+                quizView.innerHTML = `<h2>Quiz Completed!</h2><p>You have answered all questions.</p><button class="btn" onclick="switchView('results')">View Final Results</button>`;
+                return;
+            }
+
+            // Reset states
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+            
+            let checkedRadio = document.querySelector('input[name="quiz-option"]:checked');
+            if(checkedRadio) checkedRadio.checked = false;
+
+            // Load data
+            const qData = quizQuestions[currentIdx];
+            document.getElementById('progress-text').innerText = `Question ${currentIdx + 1} of ${quizQuestions.length}`;
+            document.getElementById('question-text').innerText = qData.question;
+            document.getElementById('opt-a').innerText = qData.a;
+            document.getElementById('opt-b').innerText = qData.b;
+            document.getElementById('opt-c').innerText = qData.c;
+            document.getElementById('opt-d').innerText = qData.d;
+        }
+
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const selected = document.querySelector('input[name="quiz-option"]:checked');
+            if (!selected) {
+                alert("Please select an answer choice before submitting!");
+                return;
+            }
+
+            const currentAnswer = selected.value;
+            const correctAnswer = quizQuestions[currentIdx].answer;
+            const feedbackBox = document.getElementById('feedback');
+
+            feedbackBox.classList.remove('hidden', 'correct', 'wrong');
+
+            if (currentAnswer === correctAnswer) {
+                feedbackBox.innerText = "Correct answer!";
+                feedbackBox.classList.add('correct');
+                score++;
+            } else {
+                feedbackBox.innerText = `Incorrect. The correct answer was (${correctAnswer.toUpperCase()})`;
+                feedbackBox.classList.add('wrong');
+            }
+
+            answersLogged++;
+            document.getElementById('submit-btn').add
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        });
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentIdx++;
+            loadQuestion();
+        });
+
+        function updateResultsDisplay() {
+            const display = document.getElementById('score-display');
+            if (answersLogged === 0) {
+                display.innerText = "No attempts recorded yet. Click 'Open Test Question' to get started!";
+            } else {
+                const percentage = Math.round((score / answersLogged) * 100);
+                display.innerHTML = `Completed: <strong>${answersLogged}</strong> questions.<br>Score: <strong>${score}</strong> correct.<br>Accuracy rate: <strong>${percentage}%</strong>`;
+            }
+        }
+    </script>
 </body>
 </html>
