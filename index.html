@@ -276,10 +276,20 @@
         let currentQuizScore = 0;
         let localUserAnswers = [];
 
-        // Auth Logic Engine
+        // Auth Logic Engine with explicit file sanity validator checks
         document.getElementById('btn-login').addEventListener('click', () => {
+            if (typeof quizQuestions === 'undefined') {
+                alert("ERRO CRÍTICO: O arquivo 'questions.js' não foi carregado corretamente ou contém erros de sintaxe! Verifique se ele existe e não tem erros de parênteses/chaves.");
+                return;
+            }
+
             const u = document.getElementById('login-username').value.trim();
             const p = document.getElementById('login-password').value;
+
+            if (!u || !p) {
+                alert("Por favor, preencha o utilizador e a password!");
+                return;
+            }
 
             if (usersDB[u] && usersDB[u].password === p) {
                 currentUser = u;
@@ -379,7 +389,7 @@
             document.getElementById('progress-text').innerText = `Pergunta ${currentIdx + 1} de ${quizQuestions.length}`;
             document.getElementById('question-text').innerText = qData.question;
             
-            // Handle hiding option labels if choice is empty
+            // Validate and hide empty options dynamically
             toggleOptionVisibility('opt-a', qData.a);
             toggleOptionVisibility('opt-b', qData.b);
             toggleOptionVisibility('opt-c', qData.c);
@@ -470,3 +480,78 @@
                 duration: mins,
                 startTime: null,
                 score: null,
+                logs: []
+            };
+
+            document.getElementById('admin-user-fullname').value = '';
+            document.getElementById('admin-user-username').value = '';
+            document.getElementById('admin-user-pass').value = '';
+
+            alert(`Utilizador '${name}' adicionado com sucesso.`);
+            renderAdminDirectory();
+        });
+
+        function toggleAccess(user) {
+            usersDB[user].permitted = !usersDB[user].permitted;
+            renderAdminDirectory();
+        }
+
+        function resetPassword(user) {
+            const newPass = prompt(`Introduza a nova password para o utilizador ${user}:`);
+            if (newPass && newPass.trim() !== "") {
+                usersDB[user].password = newPass.trim();
+                alert("Password redefinida com sucesso!");
+            }
+        }
+
+        function deleteUser(user) {
+            if (confirm(`Tem a certeza que deseja eliminar o utilizador ${user}?`)) {
+                delete usersDB[user];
+                renderAdminDirectory();
+            }
+        }
+
+        function viewUserResults(user) {
+            if (usersDB[user].score === null) { 
+                alert("Este utilizador ainda não concluiu o teste."); 
+                return; 
+            }
+            alert(`Resultados de ${usersDB[user].fullname}: ${usersDB[user].score} / ${quizQuestions.length} Respostas Corretas.`);
+        }
+
+        function renderAdminDirectory() {
+            const tbody = document.getElementById('admin-directory-body');
+            tbody.innerHTML = "";
+            Object.keys(usersDB).forEach(key => {
+                if(usersDB[key].role === 'admin') return;
+                const uData = usersDB[key];
+                
+                let timeString = "Não Iniciado";
+                if(uData.startTime) {
+                    const elapsed = (Date.now() - uData.startTime) / 60000;
+                    timeString = elapsed >= uData.duration ? "Expirado" : `${Math.ceil(uData.duration - elapsed)} min rest.`;
+                } else {
+                    timeString = `${uData.duration} min atrib.`;
+                }
+
+                const pBadge = uData.permitted ? `<span class="badge badge-success">Ativo</span>` : `<span class="badge badge-danger">Inativo</span>`;
+
+                tbody.innerHTML += `<tr>
+                    <td>${uData.fullname}</td>
+                    <td><strong>${key}</strong></td>
+                    <td>${timeString}</td>
+                    <td>${pBadge}</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-warning" style="padding:4px 8px; font-size:11px; margin-right:2px;" onclick="resetPassword('${key}')">Reset Password</button>
+                        <button class="btn ${uData.permitted?'btn-secondary':'btn-success'}" style="padding:4px 8px; font-size:11px; margin-right:2px;" onclick="toggleAccess('${key}')">
+                            ${uData.permitted?'Desativar':'Ativar'}
+                        </button>
+                        <button class="btn btn-danger" style="padding:4px 8px; font-size:11px; margin-right:2px;" onclick="deleteUser('${key}')">Eliminar</button>
+                        <button class="btn" style="padding:4px 8px; font-size:11px;" onclick="viewUserResults('${key}')">Ver Resultados</button>
+                    </td>
+                </tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
