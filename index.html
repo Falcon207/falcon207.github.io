@@ -271,4 +271,155 @@
 
                 <div class="card">
                     <h3>Available Evaluations</h3>
-                    <p
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Complete the multiple-choice assessment within your assigned testing window configuration profile constraint.</p>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn" id="openQuestions">Start Test Examination</button>
+                        <button class="btn btn-success" id="checkResults">Review My Summary Log</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quiz-view" class="card hidden" style="max-width: 800px; margin: 0 auto;">
+                <div id="progress-text" style="font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Question 1 of 17</div>
+                <h2 id="question-text" style="font-size: 20px; line-height: 1.5; margin-bottom: 25px;">Loading question content details...</h2>
+                
+                <div class="options-container">
+                    <label class="option-label"><input type="radio" name="quiz-option" value="a"> (A) <span id="opt-a"></span></label>
+                    <label class="option-label"><input type="radio" name="quiz-option" value="b"> (B) <span id="opt-b"></span></label>
+                    <label class="option-label"><input type="radio" name="quiz-option" value="c"> (C) <span id="opt-c"></span></label>
+                    <label class="option-label"><input type="radio" name="quiz-option" value="d"> (D) <span id="opt-d"></span></label>
+                </div>
+                <div id="feedback" class="hidden"></div>
+                <button class="btn" style="width:100%; margin-top:20px;" id="submit-btn">Submit Choice</button>
+                <button class="btn btn-success hidden" style="width:100%; margin-top:20px;" id="next-btn">Proceed to Next Question</button>
+            </div>
+
+            <div id="results-view" class="card hidden">
+                <h2>Performance Summary Profile</h2>
+                <p style="font-size: 16px; margin: 10px 0;" id="score-display"></p>
+                
+                <div id="review-section">
+                    <h3 style="margin-top: 30px; margin-bottom: 15px;">Question Breakdown Review</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="panel-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th>Question Context</th>
+                                    <th style="width: 15%">Your Input</th>
+                                    <th style="width: 15%">Correct Target</th>
+                                    <th style="width: 12%">Status Metric</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 25px;" id="back-to-dash">Return to Dashboard</button>
+            </div>
+
+            <div id="admin-view" class="hidden">
+                <div class="top-bar">
+                    <h1 style="margin: 0; font-size: 28px;">Administrative Directory Console</h1>
+                </div>
+
+                <div class="admin-grid">
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px; font-size: 18px;">Create New User</h3>
+                        <div class="form-group">
+                            <label>Full Legal Name</label>
+                            <input type="text" id="admin-user-fullname" placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label>Username Handle</label>
+                            <input type="text" id="admin-user-username" placeholder="johndoe123">
+                        </div>
+                        <div class="form-group">
+                            <label>Access Password</label>
+                            <input type="password" id="admin-user-pass" placeholder="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label>Access Duration (Minutes)</label>
+                            <input type="number" id="admin-user-time" value="60" min="1">
+                        </div>
+                        <button class="btn btn-success" style="width: 100%; margin-top: 5px;" id="admin-create-user">Provision Profile Account</button>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px; font-size: 18px;">Active System Users</h3>
+                        <div style="overflow-x: auto;">
+                            <table class="panel-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Username</th>
+                                        <th>Remaining Allocation Window</th>
+                                        <th>Session Status</th>
+                                        <th style="text-align: right;">Administrative Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-directory-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script>
+        // Core Local Mock Database Engine Layer
+        let usersDB = {
+            "admin": { password: "admin123", role: "admin", fullname: "System Administrator" },
+            "student1": { password: "password123", role: "student", fullname: "Carlos Silva", permitted: true, duration: 60, startTime: null, score: null, logs: [] }
+        };
+
+        let currentUser = null;
+        let currentIdx = 0;
+        let currentQuizScore = 0;
+        let localUserAnswers = [];
+
+        // Catch clicks early to prevent invisible failures
+        document.getElementById('btn-login').onclick = function(e) {
+            e.preventDefault();
+            
+            // Check if your questions database loaded properly
+            if (typeof quizQuestions === 'undefined' || !Array.isArray(quizQuestions)) {
+                alert("CRITICAL CODE ERROR: Your 'questions.js' file failed to load, or contains broken brackets/syntax errors! Please check your file on GitHub.");
+                return;
+            }
+
+            const u = document.getElementById('login-username').value.trim();
+            const p = document.getElementById('login-password').value;
+
+            if (!u || !p) {
+                alert("Please fill in both fields!");
+                return;
+            }
+
+            if (usersDB[u] && usersDB[u].password === p) {
+                currentUser = u;
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                
+                document.getElementById('portal-sidebar').classList.remove('hidden');
+                
+                if (usersDB[u].role === 'admin') {
+                    document.getElementById('menu-admin-link').classList.remove('hidden');
+                    sidebarNavigate('admin');
+                } else {
+                    document.getElementById('menu-admin-link').classList.add('hidden');
+                    if (!usersDB[u].permitted) {
+                        alert("Account profile access permission has been suspended.");
+                        return;
+                    }
+                    if (usersDB[u].startTime === null) {
+                        usersDB[u].startTime = Date.now();
+                    }
+                    const elapsed = (Date.now() - usersDB[u].startTime) / 60000;
+                    if (elapsed >= usersDB[u].duration) {
+                        alert("The assigned access parameter time limit has passed.");
+                        usersDB[u].permitted = false;
+                        return
