@@ -14,7 +14,7 @@
             --danger-hover: #dc2626;
             --warning: #f59e0b;
             --dark-sidebar: #1e1e2f;
-            --body-bg: #eef1f5; /* Premium Light Gray Color Tone */
+            --body-bg: #eef1f5;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
@@ -276,9 +276,60 @@
             padding-top: 20px;
             border-top: 1px solid var(--border);
         }
+
+        /* NEW CREDENTIAL MODAL POPUP BACKDROP OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 460px;
+            width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+        }
+        .copy-row {
+            display: flex;
+            background-color: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
+
+    <div id="credential-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3 style="margin-top: 0; font-size: 20px; color: var(--success);">Candidate Profile Provisioned!</h3>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Here are your credentials. Click copy buttons to instantly save values:</p>
+            
+            <label style="margin-bottom:4px;">Username</label>
+            <div class="copy-row">
+                <span id="modal-display-user" style="font-family: monospace; font-size: 15px; font-weight: 700;"></span>
+                <button class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="copyFieldText('modal-display-user')">Copy</button>
+            </div>
+
+            <label style="margin-bottom:4px;">Password</label>
+            <div class="copy-row">
+                <span id="modal-display-pass" style="font-family: monospace; font-size: 15px; font-weight: 700;"></span>
+                <button class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="copyFieldText('modal-display-pass')">Copy</button>
+            </div>
+
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="closeCredentialModal()">Close Window</button>
+        </div>
+    </div>
 
     <div id="portal-sidebar" class="sidebar hidden">
         <div class="sidebar-brand">Test Portal</div>
@@ -434,23 +485,19 @@
 
             <div id="admin-create-user-view" class="card hidden" style="max-width: 600px; margin: 0 auto;">
                 <h2 style="font-size: 22px; margin-bottom: 8px;">Create New Candidate Profile</h2>
-                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Deploy a clean user instance credential package directly into the storage layer array matrix variables.</p>
+                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Deploy a clean user profile instance. Credentials will be randomly generated automatically.</p>
                 
                 <div class="form-group">
                     <label>Full Legal Name</label>
-                    <input type="text" id="admin-user-fullname" placeholder="John Doe">
+                    <input type="text" id="admin-user-fullname" placeholder="Abid">
                 </div>
                 <div class="form-group">
-                    <label>Username Handle</label>
-                    <input type="text" id="admin-user-username" placeholder="johndoe123">
+                    <label>Email Address <span style="color: var(--text-muted); font-size:12px; font-weight:normal;">(Optional)</span></label>
+                    <input type="text" id="admin-user-email" placeholder="abid@example.com">
                 </div>
                 <div class="form-group">
-                    <label>Access Password</label>
-                    <input type="password" id="admin-user-pass" placeholder="••••••••">
-                </div>
-                <div class="form-group">
-                    <label>Access Duration (Minutes)</label>
-                    <input type="number" id="admin-user-time" value="60" min="1">
+                    <label>Access Limit (Days)</label>
+                    <input type="number" id="admin-user-days" value="1" min="1">
                 </div>
                 
                 <div style="display: flex; gap: 15px; margin-top: 10px;">
@@ -466,7 +513,7 @@
     <script>
         let usersDB = {
             "admin": { password: "admin123", role: "admin", fullname: "System Administrator" },
-            "student1": { password: "password123", role: "student", fullname: "Carlos Silva", permitted: true, duration: 60, startTime: null, score: null, logs: [] }
+            "student1": { password: "password123", role: "student", fullname: "Carlos Silva", permitted: true, duration: 1440, startTime: null, score: null, logs: [] }
         };
 
         let currentUser = null;
@@ -475,7 +522,6 @@
 
         document.getElementById('btn-login').onclick = function(e) {
             e.preventDefault();
-            
             if (typeof quizQuestions === 'undefined' || !Array.isArray(quizQuestions)) {
                 alert("CRITICAL CODE ERROR: Your 'questions.js' file failed to load or contains syntax errors!");
                 return;
@@ -494,10 +540,7 @@
                 document.getElementById('login-username').value = '';
                 document.getElementById('login-password').value = '';
                 
-                // Show Sidebar
                 document.getElementById('portal-sidebar').classList.remove('hidden');
-                
-                // Dynamically append User's Fullname to Sidebar element node
                 document.getElementById('sidebar-user-fullname').innerText = usersDB[u].fullname;
                 
                 if (usersDB[u].role === 'admin') {
@@ -580,7 +623,13 @@
                 
                 const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
                 const remaining = Math.max(0, Math.ceil(usersDB[currentUser].duration - timePassed));
-                document.getElementById('access-expiry-notice').innerText = `Allocated Session Window Time Remaining: ${remaining} Minute(s)`;
+                
+                // Formatted display showing clean remaining time logic values
+                if(remaining > 1440) {
+                    document.getElementById('access-expiry-notice').innerText = `Allocated Session Window Time Remaining: ${Math.round(remaining/1440)} Day(s)`;
+                } else {
+                    document.getElementById('access-expiry-notice').innerText = `Allocated Session Window Time Remaining: ${remaining} Minute(s)`;
+                }
             }
             if (view === 'quiz') {
                 const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
@@ -748,32 +797,72 @@
             }
         }
 
+        // --- NEW HELPER FUNCTIONS FOR RANDOM ACCOUNT PROFILE PROVISIONING ---
+        function generateRandomString(length, pool) {
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += pool.charAt(Math.floor(Math.random() * pool.length));
+            }
+            return result;
+        }
+
         document.getElementById('admin-create-user-submit').onclick = function() {
             const name = document.getElementById('admin-user-fullname').value.trim();
-            const username = document.getElementById('admin-user-username').value.trim();
-            const pass = document.getElementById('admin-user-pass').value;
-            const mins = parseInt(document.getElementById('admin-user-time').value) || 60;
+            const email = document.getElementById('admin-user-email').value.trim();
+            const days = parseInt(document.getElementById('admin-user-days').value) || 1;
 
-            if(!name || !username || !pass) { alert("Please complete all input fields!"); return; }
+            if(!name) { alert("Please input the candidate's Full Legal Name!"); return; }
             
-            usersDB[username] = {
-                password: pass,
+            // Clean format name base prefix handler (lowercase, alphanumeric characters only)
+            let cleanBase = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+            if(!cleanBase) cleanBase = "user";
+            
+            // Generate exact matches matching criteria matching criteria rule string patterns
+            const randomUserSuffix = generateRandomString(6, 'abcdefghijklmnopqrstuvwxyz');
+            const generatedUsername = `${cleanBase}_${randomUserSuffix}`;
+            
+            const passwordPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const generatedPassword = generateRandomString(12, passwordPool);
+            
+            // Convert days dynamically into runtime calculation minutes array matrices profiles
+            const calculatedMinutes = days * 24 * 60;
+
+            usersDB[generatedUsername] = {
+                password: generatedPassword,
                 role: "student",
                 fullname: name,
+                email: email || "N/A",
                 permitted: true,
-                duration: mins,
+                duration: calculatedMinutes,
                 startTime: null,
                 score: null,
                 logs: []
             };
 
+            // Reset Input Values Clear
             document.getElementById('admin-user-fullname').value = '';
-            document.getElementById('admin-user-username').value = '';
-            document.getElementById('admin-user-pass').value = '';
+            document.getElementById('admin-user-email').value = '';
+            document.getElementById('admin-user-days').value = '1';
 
-            alert(`User profile successfully created for '${name}'.`);
-            switchView('admin');
+            // Launch custom popup screen matrix
+            document.getElementById('modal-display-user').innerText = generatedUsername;
+            document.getElementById('modal-display-pass').innerText = generatedPassword;
+            document.getElementById('credential-modal').classList.remove('hidden');
         };
+
+        function copyFieldText(elementId) {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("Copied to clipboard successfully!");
+            }).catch(err => {
+                alert("Failed to copy text string.");
+            });
+        }
+
+        function closeCredentialModal() {
+            document.getElementById('credential-modal').classList.add('hidden');
+            switchView('admin');
+        }
 
         function toggleAccess(user) {
             usersDB[user].permitted = !usersDB[user].permitted;
@@ -781,11 +870,13 @@
         }
 
         function resetPassword(user) {
-            const newPass = prompt(`Enter new password for ${user}:`);
-            if (newPass && newPass.trim() !== "") {
-                usersDB[user].password = newPass.trim();
-                alert("Password updated successfully.");
-            }
+            const passwordPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const newGeneratedPass = generateRandomString(12, passwordPool);
+            usersDB[user].password = newGeneratedPass;
+            
+            document.getElementById('modal-display-user').innerText = user;
+            document.getElementById('modal-display-pass').innerText = newGeneratedPass;
+            document.getElementById('credential-modal').classList.remove('hidden');
         }
 
         function deleteUser(user) {
@@ -805,20 +896,27 @@
                 let timeString = "Not Triggered";
                 if(uData.startTime) {
                     const elapsed = (Date.now() - uData.startTime) / 60000;
-                    timeString = elapsed >= uData.duration ? "Expired" : `${Math.ceil(uData.duration - elapsed)} mins left`;
+                    const remainingMins = uData.duration - elapsed;
+                    if(remainingMins <= 0) {
+                        timeString = "Expired";
+                    } else if (remainingMins > 1440) {
+                        timeString = `${Math.ceil(remainingMins / 1440)} days left`;
+                    } else {
+                        timeString = `${Math.ceil(remainingMins)} mins left`;
+                    }
                 } else {
-                    timeString = `${uData.duration} mins`;
+                    timeString = `${Math.round(uData.duration / 1440)} day(s)`;
                 }
 
                 const pBadge = uData.permitted ? `<span class="badge badge-success">Active</span>` : `<span class="badge badge-danger">Inactive</span>`;
 
                 tbody.innerHTML += `<tr>
-                    <td>${uData.fullname}</td>
+                    <td>${uData.fullname} <br><small style="color:var(--text-muted);">${uData.email||''}</small></td>
                     <td><strong>${key}</strong></td>
                     <td>${timeString}</td>
                     <td>${pBadge}</td>
                     <td style="text-align: right;">
-                        <button class="btn btn-warning" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="resetPassword('${key}')">Reset Password</button>
+                        <button class="btn btn-warning" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="resetPassword('${key}')">Regen Pass</button>
                         <button class="btn ${uData.permitted?'btn-secondary':'btn-success'}" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="toggleAccess('${key}')">
                             ${uData.permitted?'Deactivate':'Activate'}
                         </button>
