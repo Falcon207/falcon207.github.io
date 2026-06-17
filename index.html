@@ -105,21 +105,44 @@
             margin-bottom: 30px;
         }
 
-        .hidden { display: none !important; }
-
-        /* GRID FOR LAYOUT */
-        .admin-grid {
+        /* NAVIGATION NAV GRID SUBPANELS */
+        .dashboard-nav-grid {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-            align-items: start;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
-        @media (max-width: 992px) {
-            .admin-grid { grid-template-columns: 1fr; }
-            body { flex-direction: column; }
-            .sidebar { width: 100%; }
+        .nav-block-btn {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
+
+        .nav-block-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1);
+        }
+
+        .nav-block-btn h3 {
+            margin: 0 0 10px 0;
+            font-size: 22px;
+            color: var(--text-main);
+        }
+
+        .nav-block-btn p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .hidden { display: none !important; }
 
         /* FORMS & INPUTS */
         .form-group {
@@ -236,7 +259,6 @@
         <div class="sidebar-brand">Test Portal</div>
         <ul class="sidebar-menu">
             <li class="sidebar-item active" id="menu-dash-link"><a onclick="sidebarNavigate('dashboard')">Dashboard</a></li>
-            <li class="sidebar-item hidden" id="menu-admin-link"><a onclick="sidebarNavigate('admin')">User Directory</a></li>
         </ul>
         <div style="padding: 20px;">
             <button class="btn btn-danger" style="width: 100%;" onclick="logout()">Sign Out</button>
@@ -320,48 +342,83 @@
 
             <div id="admin-view" class="hidden">
                 <div class="top-bar">
-                    <h1 style="margin: 0; font-size: 28px;">Administrative Directory Console</h1>
+                    <h1 style="margin: 0; font-size: 28px;">Administrative Control Center</h1>
                 </div>
 
-                <div class="admin-grid">
-                    <div class="card">
-                        <h3 style="margin-bottom: 20px; font-size: 18px;">Create New User</h3>
-                        <div class="form-group">
-                            <label>Full Legal Name</label>
-                            <input type="text" id="admin-user-fullname" placeholder="John Doe">
-                        </div>
-                        <div class="form-group">
-                            <label>Username Handle</label>
-                            <input type="text" id="admin-user-username" placeholder="johndoe123">
-                        </div>
-                        <div class="form-group">
-                            <label>Access Password</label>
-                            <input type="password" id="admin-user-pass" placeholder="••••••••">
-                        </div>
-                        <div class="form-group">
-                            <label>Access Duration (Minutes)</label>
-                            <input type="number" id="admin-user-time" value="60" min="1">
-                        </div>
-                        <button class="btn btn-success" style="width: 100%; margin-top: 5px;" id="admin-create-user">Provision Profile Account</button>
+                <div class="dashboard-nav-grid">
+                    <div class="nav-block-btn" id="nav-target-candidates">
+                        <h3>Candidates</h3>
+                        <p>Manage candidate listing profiles, access tokens, timers, and accounts status metrics.</p>
                     </div>
+                    <div class="nav-block-btn" id="nav-target-tests">
+                        <h3>Tests</h3>
+                        <p>Review comprehensive score summary indices sorted by User ID reference logs.</p>
+                    </div>
+                </div>
 
-                    <div class="card">
-                        <h3 style="margin-bottom: 20px; font-size: 18px;">Active System Users</h3>
-                        <div style="overflow-x: auto;">
-                            <table class="panel-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Username</th>
-                                        <th>Remaining Allocation Window</th>
-                                        <th>Session Status</th>
-                                        <th style="text-align: right;">Administrative Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-directory-body"></tbody>
-                            </table>
-                        </div>
+                <div id="admin-subpanel-candidates" class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="margin: 0; font-size: 20px;">Candidate Workspace Matrix</h3>
+                        <button class="btn btn-success" id="btn-trigger-create-view">Create New Candidate</button>
                     </div>
+                    <div style="overflow-x: auto;">
+                        <table class="panel-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Remaining Time Allocation</th>
+                                    <th>Access Status</th>
+                                    <th style="text-align: right;">Administrative Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-directory-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-subpanel-tests" class="card hidden">
+                    <h3 style="margin-bottom: 20px; font-size: 20px;">Global Historical Evaluation Scores</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="panel-table">
+                            <thead>
+                                <tr>
+                                    <th>User ID (Username)</th>
+                                    <th>Candidate Name</th>
+                                    <th>Calculated Metrics Score</th>
+                                    <th>Activity Log Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-scores-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-create-user-view" class="card hidden" style="max-width: 600px; margin: 0 auto;">
+                <h2 style="font-size: 22px; margin-bottom: 8px;">Create New Candidate Profile</h2>
+                <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 14px;">Deploy a clean user instance credential package directly into the storage layer array matrix variables.</p>
+                
+                <div class="form-group">
+                    <label>Full Legal Name</label>
+                    <input type="text" id="admin-user-fullname" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Username Handle</label>
+                    <input type="text" id="admin-user-username" placeholder="johndoe123">
+                </div>
+                <div class="form-group">
+                    <label>Access Password</label>
+                    <input type="password" id="admin-user-pass" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>Access Duration (Minutes)</label>
+                    <input type="number" id="admin-user-time" value="60" min="1">
+                </div>
+                
+                <div style="display: flex; gap: 15px; margin-top: 10px;">
+                    <button class="btn btn-success" style="flex: 1;" id="admin-create-user-submit">Provision Account</button>
+                    <button class="btn btn-secondary" style="flex: 1;" id="admin-create-user-cancel">Cancel & Go Back</button>
                 </div>
             </div>
 
@@ -381,13 +438,12 @@
         let currentQuizScore = 0;
         let localUserAnswers = [];
 
-        // Catch clicks early to prevent invisible failures
+        // Application Authentication Router 
         document.getElementById('btn-login').onclick = function(e) {
             e.preventDefault();
             
-            // Check if your questions database loaded properly
             if (typeof quizQuestions === 'undefined' || !Array.isArray(quizQuestions)) {
-                alert("CRITICAL CODE ERROR: Your 'questions.js' file failed to load, or contains broken brackets/syntax errors! Please check your file on GitHub.");
+                alert("CRITICAL CODE ERROR: Your 'questions.js' file failed to load, or contains syntax errors! Please check your file on GitHub.");
                 return;
             }
 
@@ -407,10 +463,8 @@
                 document.getElementById('portal-sidebar').classList.remove('hidden');
                 
                 if (usersDB[u].role === 'admin') {
-                    document.getElementById('menu-admin-link').classList.remove('hidden');
-                    sidebarNavigate('admin');
+                    switchView('admin');
                 } else {
-                    document.getElementById('menu-admin-link').classList.add('hidden');
                     if (!usersDB[u].permitted) {
                         alert("Account profile access permission has been suspended.");
                         return;
@@ -424,10 +478,10 @@
                         usersDB[u].permitted = false;
                         return;
                     }
-                    sidebarNavigate('dashboard');
+                    switchView('dashboard');
                 }
             } else {
-                alert("Incorrect username or password configuration parameters.");
+                alert("Incorrect username or password parameters.");
             }
         };
 
@@ -438,15 +492,34 @@
         }
 
         function sidebarNavigate(target) {
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             if(target === 'dashboard') {
-                document.getElementById('menu-dash-link').classList.add('active');
-                switchView('dashboard');
-            } else if(target === 'admin') {
-                document.getElementById('menu-admin-link').classList.add('active');
-                switchView('admin');
+                if(usersDB[currentUser].role === 'admin') {
+                    switchView('admin');
+                } else {
+                    switchView('dashboard');
+                }
             }
         }
+
+        // Subpanel View Matrix Router Toggles
+        document.getElementById('nav-target-candidates').onclick = function() {
+            document.getElementById('admin-subpanel-candidates').classList.remove('hidden');
+            document.getElementById('admin-subpanel-tests').classList.add('hidden');
+        };
+
+        document.getElementById('nav-target-tests').onclick = function() {
+            document.getElementById('admin-subpanel-candidates').classList.add('hidden');
+            document.getElementById('admin-subpanel-tests').classList.remove('hidden');
+            renderTestMetricsDirectory();
+        };
+
+        // Jump to stand-alone view screen
+        document.getElementById('btn-trigger-create-view').onclick = function() {
+            switchView('create-candidate-page');
+        };
+        document.getElementById('admin-create-user-cancel').onclick = function() {
+            switchView('admin');
+        };
 
         function switchView(view) {
             document.getElementById('login-view').classList.add('hidden');
@@ -454,10 +527,14 @@
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('results-view').classList.add('hidden');
             document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('admin-create-user-view').classList.add('hidden');
 
             if (view === 'login') document.getElementById('login-view').classList.remove('hidden');
+            if (view === 'create-candidate-page') document.getElementById('admin-create-user-view').classList.remove('hidden');
             if (view === 'admin') {
                 document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('admin-subpanel-candidates').classList.remove('hidden');
+                document.getElementById('admin-subpanel-tests').classList.add('hidden');
                 renderAdminDirectory();
             }
             if (view === 'dashboard') {
@@ -586,8 +663,8 @@
             });
         }
 
-        // Space Administration Business Logical Layer Rules
-        document.getElementById('admin-create-user').addEventListener('click', () => {
+        // Add Candidates Process Logic Engine
+        document.getElementById('admin-create-user-submit').onclick = function() {
             const name = document.getElementById('admin-user-fullname').value.trim();
             const username = document.getElementById('admin-user-username').value.trim();
             const pass = document.getElementById('admin-user-pass').value;
@@ -610,9 +687,9 @@
             document.getElementById('admin-user-username').value = '';
             document.getElementById('admin-user-pass').value = '';
 
-            alert(`User profile created for '${name}'.`);
-            renderAdminDirectory();
-        });
+            alert(`User profile successfully created for '${name}'.`);
+            switchView('admin');
+        };
 
         function toggleAccess(user) {
             usersDB[user].permitted = !usersDB[user].permitted;
@@ -634,14 +711,6 @@
             }
         }
 
-        function viewUserResults(user) {
-            if (usersDB[user].score === null) { 
-                alert("This user has not completed a test session yet."); 
-                return; 
-            }
-            alert(`Results for ${usersDB[user].fullname}: ${usersDB[user].score} / ${quizQuestions.length}`);
-        }
-
         function renderAdminDirectory() {
             const tbody = document.getElementById('admin-directory-body');
             tbody.innerHTML = "";
@@ -657,7 +726,7 @@
                     timeString = `${uData.duration} mins`;
                 }
 
-                const pBadge = uData.permitted ? `<span class="badge badge-success">Active</span>` : `<span class="badge badge-danger">Revoked</span>`;
+                const pBadge = uData.permitted ? `<span class="badge badge-success">Active</span>` : `<span class="badge badge-danger">Inactive</span>`;
 
                 tbody.innerHTML += `<tr>
                     <td>${uData.fullname}</td>
@@ -669,9 +738,27 @@
                         <button class="btn ${uData.permitted?'btn-secondary':'btn-success'}" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="toggleAccess('${key}')">
                             ${uData.permitted?'Deactivate':'Activate'}
                         </button>
-                        <button class="btn btn-danger" style="padding:6px 10px; font-size:12px; margin-right:4px;" onclick="deleteUser('${key}')">Delete</button>
-                        <button class="btn" style="padding:6px 10px; font-size:12px;" onclick="viewUserResults('${key}')">View Log</button>
+                        <button class="btn btn-danger" style="padding:6px 10px; font-size:12px;" onclick="deleteUser('${key}')">Delete</button>
                     </td>
+                </tr>`;
+            });
+        }
+
+        function renderTestMetricsDirectory() {
+            const tbody = document.getElementById('admin-scores-body');
+            tbody.innerHTML = "";
+            Object.keys(usersDB).forEach(key => {
+                if(usersDB[key].role === 'admin') return;
+                const uData = usersDB[key];
+                
+                let scoreText = uData.score !== null ? `<strong>${uData.score}</strong> Answers Correct` : "No Attempt Logged";
+                let activityText = uData.startTime !== null ? "Session Started / Closed" : "Awaiting Initialization";
+
+                tbody.innerHTML += `<tr>
+                    <td><strong>${key}</strong></td>
+                    <td>${uData.fullname}</td>
+                    <td>${scoreText}</td>
+                    <td><span class="badge ${uData.score!==null?'badge-success':'badge-danger'}">${activityText}</span></td>
                 </tr>`;
             });
         }
