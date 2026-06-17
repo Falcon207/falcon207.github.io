@@ -25,7 +25,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--body-bg);
             margin: 0;
             padding: 0;
@@ -280,76 +280,126 @@
             border-top: 1px solid var(--border);
         }
 
-        /* POPUP MODAL & ACCORDION BLOCKS */
+        /* SCREEN MATCHING POPUP DIALOG ARCHITECTURE */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
+            background-color: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(2px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
         }
-        .modal-box {
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 480px;
+        .modal-box-v2 {
+            background-color: #ffffff;
+            padding: 32px;
+            border-radius: 28px;
+            max-width: 540px;
             width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
         }
-        .copy-row {
+        .modal-close-x {
+            position: absolute;
+            top: 24px; right: 24px;
+            font-size: 20px; color: #1e3a1e;
+            cursor: pointer; background: none; border: none;
+            font-weight: bold; opacity: 0.7;
+        }
+        .modal-close-x:hover { opacity: 1; }
+        
+        .modal-header-section {
             display: flex;
-            background-color: #f1f5f9;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 10px 14px;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        .alert-warning-banner {
-            background-color: var(--warning-bg);
-            border: 1px solid var(--warning-border);
-            color: var(--warning-text);
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13.5px;
-            font-weight: 500;
-            line-height: 1.4;
-            margin-bottom: 20px;
+        .success-circle-icon {
+            width: 36px; height: 36px;
+            background-color: #f0fdf4;
+            border: 2px solid #22c55e;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #15803d; font-weight: bold; font-size: 18px;
+            flex-shrink: 0; margin-top: 4px;
         }
+        .modal-header-text h2 {
+            margin: 0 0 6px 0; font-size: 22px; color: #143519; font-weight: 600;
+        }
+        .modal-header-text p {
+            margin: 0; font-size: 15px; color: #4a5d4e; line-height: 1.4;
+        }
+
+        .credentials-section-title {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+        }
+        .credentials-section-title h3 {
+            margin: 0; font-size: 18px; color: #143519; font-weight: 600;
+        }
+        .btn-copy-v2 {
+            background-color: #ffffff; border: 1px solid #cce0d0; border-radius: 12px;
+            padding: 6px 14px; font-size: 14px; color: #2c4a30; font-weight: 500;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-copy-v2:hover { background-color: #f4f9f5; border-color: #a8cbd0; }
+
+        .credentials-display-block {
+            background-color: #f7fafd; border: 1px solid #e2eaf2; border-radius: 16px;
+            padding: 18px; font-family: monospace; font-size: 15px; color: #2d3748;
+            line-height: 1.6; white-space: pre-wrap; margin-bottom: 24px;
+        }
+
+        .warning-notice-banner-v2 {
+            background-color: #fff6ee; border-radius: 14px; padding: 14px 16px;
+            display: flex; gap: 10px; align-items: flex-start;
+            color: #9a4714; font-size: 14.5px; line-height: 1.4; margin-bottom: 28px;
+        }
+        .warning-notice-banner-v2 span.icon { font-size: 16px; margin-top: 1px; }
+
+        .btn-done-v2 {
+            width: fit-content; float: right; padding: 12px 28px;
+            background-color: #ea580c; color: white; border-radius: 12px;
+            font-weight: 600; font-size: 15px; border: none; cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-done-v2:hover { background-color: #c2410c; }
     </style>
 </head>
 <body>
 
     <div id="credential-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <h3 style="margin-top: 0; font-size: 20px; color: var(--success); margin-bottom: 5px;">Candidate Profile Provisioned!</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Review and store secure registration records securely.</p>
+        <div class="modal-box-v2">
+            <button class="modal-close-x" onclick="closeCredentialModal()">✕</button>
             
-            <button class="btn btn-success" style="width: 100%; margin-bottom: 20px; padding: 12px;" onclick="copyAllCredentialsText()">
-                📋 Copy All 3 Lines
-            </button>
-
-            <label style="margin-bottom:4px;">Username</label>
-            <div class="copy-row">
-                <span id="modal-display-user" style="font-family: monospace; font-size: 15px; font-weight: 700;"></span>
-                <button class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="copyFieldText('modal-display-user')">Copy</button>
+            <div class="modal-header-section">
+                <div class="success-circle-icon">✓</div>
+                <div class="modal-header-text">
+                    <h2><span id="modal-display-name">Candidate</span> can now sign in</h2>
+                    <p>Share these credentials with the candidate. The password is shown only once.</p>
+                </div>
             </div>
 
-            <label style="margin-bottom:4px;">Password</label>
-            <div class="copy-row">
-                <span id="modal-display-pass" style="font-family: monospace; font-size: 15px; font-weight: 700;"></span>
-                <button class="btn btn-secondary" style="padding:4px 10px; font-size:12px;" onclick="copyFieldText('modal-display-pass')">Copy</button>
+            <div class="credentials-section-title">
+                <h3>Credentials</h3>
+                <button class="btn-copy-v2" onclick="copyAllCredentialsText()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Copy
+                </button>
             </div>
 
-            <div class="alert-warning-banner">
-                ⚠️ <strong>Notice:</strong> Once you close this dialog the password is gone for good.
+            <div class="credentials-display-block" id="full-credentials-text-block"></div>
+
+            <div class="warning-notice-banner-v2">
+                <span class="icon">⚠️</span>
+                <div>Once you close this dialog the password is gone for good.</div>
             </div>
 
-            <button class="btn btn-danger" style="width: 100%;" onclick="closeCredentialModal()">Close Window</button>
+            <div style="width: 100%; overflow: hidden;">
+                <button class="btn-done-v2" onclick="closeCredentialModal()">Done</button>
+            </div>
         </div>
     </div>
 
@@ -860,33 +910,27 @@
             document.getElementById('admin-user-email').value = '';
             document.getElementById('admin-user-days').value = '1';
 
-            // Load values to popup variables
-            document.getElementById('modal-display-user').innerText = generatedUsername;
-            document.getElementById('modal-display-pass').innerText = generatedPassword;
-            document.getElementById('credential-modal').classList.remove('hidden');
+            // Open the layout popup modal view
+            openCredentialPopup(name, generatedUsername, generatedPassword);
         };
 
-        // --- NEW ONE-CLICK MULTILINE COPY ENGINE ---
-        function copyAllCredentialsText() {
-            const user = document.getElementById('modal-display-user').innerText;
-            const pass = document.getElementById('modal-display-pass').innerText;
+        function openCredentialPopup(name, username, password) {
+            document.getElementById('modal-display-name').innerText = name;
             
-            // Constructs the 3-line chunk exactly as requested
-            const fullBlockText = `Here are your credentials:\nusername: ${user}\npassword: ${pass}`;
+            // Build the string block perfectly structured exactly like your request text guidelines
+            const formattedBlockText = `Here are your credentials:\nusername: ${username}\npassword: ${password}`;
+            document.getElementById('full-credentials-text-block').innerText = formattedBlockText;
             
-            navigator.clipboard.writeText(fullBlockText).then(() => {
-                alert("All 3 lines copied to clipboard successfully!");
-            }).catch(err => {
-                alert("Failed to copy text sequence layout variables.");
-            });
+            document.getElementById('credential-modal').classList.remove('hidden');
         }
 
-        function copyFieldText(elementId) {
-            const textToCopy = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                alert("Copied to clipboard successfully!");
+        function copyAllCredentialsText() {
+            const textBlock = document.getElementById('full-credentials-text-block').innerText;
+            
+            navigator.clipboard.writeText(textBlock).then(() => {
+                alert("Credentials block copied to clipboard successfully!");
             }).catch(err => {
-                alert("Failed to copy text string.");
+                alert("Failed to access clipboard utilities.");
             });
         }
 
@@ -905,9 +949,7 @@
             const newGeneratedPass = generateRandomString(12, passwordPool);
             usersDB[user].password = newGeneratedPass;
             
-            document.getElementById('modal-display-user').innerText = user;
-            document.getElementById('modal-display-pass').innerText = newGeneratedPass;
-            document.getElementById('credential-modal').classList.remove('hidden');
+            openCredentialPopup(usersDB[user].fullname, user, newGeneratedPass);
         }
 
         function deleteUser(user) {
