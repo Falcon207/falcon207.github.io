@@ -76,7 +76,7 @@ const quizQuestions = [
     "a": "À resposta ou reação da pessoa à mensagem.",
     "b": "Ao início de uma conversa.",
     "c": "À forma como utilizamos o tom.",
-    "d": "Ao encerramento do diálogo.",
+    "d": "Ao início de uma conversa.",
     "answer": "a"
   },
   {
@@ -129,7 +129,7 @@ const quizQuestions = [
   },
   {
     "question": "Para sinalizar corretamente o local de um acidente, o motorista deve:",
-    "a": "Ligar as luzes de perigo, vestir o colete refletor e colocar o triângulo de pré-sinalização de perigo.",
+    "a": "Ligar as luzes de perigo, vestir o colete refletor e colocar o triângulo de pré-sinalização.",
     "b": "Abandonar o local do acidente.",
     "c": "Fazer sinais de luzes apenas.",
     "d": "Gritar por socorro.",
