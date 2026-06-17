@@ -20,9 +20,12 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
             box-sizing: border-box;
+        }
+        .wide-card {
+            max-width: 900px;
         }
         h1, h2 {
             color: #1a2a3a;
@@ -93,6 +96,32 @@
             margin-bottom: 10px;
             font-weight: bold;
         }
+
+        /* Summary Table Styling */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .summary-table th, .summary-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 15px;
+        }
+        .summary-table th {
+            background-color: #f8f9fa;
+            color: #1a2a3a;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .badge-success { background-color: #d4edda; color: #155724; }
+        .badge-danger { background-color: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
@@ -105,15 +134,15 @@
         </div>
     </div>
 
-    <div id="quiz-view" class="card hidden">
-        <div id="progress-text">Question 1 of 95</div>
-        <h2 id="question-text">Question Placeholder text?</h2>
+    <div id="quiz-view" class="card">
+        <div id="progress-text">Question 1 of 17</div>
+        <h2 id="question-text">Loading...</h2>
         
         <div class="options-container">
-            <label class="option-label"><input type="radio" name="quiz-option" value="a"> <span id="opt-a">Option A</span></label>
-            <label class="option-label"><input type="radio" name="quiz-option" value="b"> <span id="opt-b">Option B</span></label>
-            <label class="option-label"><input type="radio" name="quiz-option" value="c"> <span id="opt-c">Option C</span></label>
-            <label class="option-label"><input type="radio" name="quiz-option" value="d"> <span id="opt-d">Option D</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="a"> (A) <span id="opt-a">Option A</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="b"> (B) <span id="opt-b">Option B</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="c"> (C) <span id="opt-c">Option C</span></label>
+            <label class="option-label"><input type="radio" name="quiz-option" value="d"> (D) <span id="opt-d">Option D</span></label>
         </div>
 
         <div id="feedback" class="hidden"></div>
@@ -122,25 +151,45 @@
         <button class="btn btn-secondary hidden" id="next-btn">Next Question</button>
     </div>
 
-    <div id="results-view" class="card hidden">
+    <div id="results-view" class="card wide-card hidden">
         <h2>Your Performance Profile</h2>
-        <p style="font-size: 18px; margin: 20px 0;" id="score-display">You haven't taken the test yet.</p>
+        <p style="font-size: 18px; margin: 10px 0;" id="score-display">You haven't taken the test yet.</p>
+        
+        <div id="review-section">
+            <h3>Question-by-Question Review Summary</h3>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">#</th>
+                        <th style="width: 55%">Question</th>
+                        <th style="width: 15%">Your Answer</th>
+                        <th style="width: 15%">Correct Answer</th>
+                        <th style="width: 10%">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="summary-table-body">
+                    </tbody>
+            </table>
+        </div>
+
         <button class="btn btn-back" id="back-to-dash">Back to Dashboard</button>
     </div>
 
     <script src="questions.js"></script>
-
     <script>
         let currentIdx = 0;
         let score = 0;
-        let answersLogged = 0;
+        let userAnswers = [];
 
-        // View DOM Nodes
         const dashView = document.getElementById('dashboard-view');
         const quizView = document.getElementById('quiz-view');
         const resultsView = document.getElementById('results-view');
 
-        // Buttons
+        // Initial setup
+        dashView.classList.remove('hidden');
+        quizView.classList.add('hidden');
+        resultsView.classList.add('hidden');
+
         document.getElementById('openQuestions').addEventListener('click', () => switchView('quiz'));
         document.getElementById('checkResults').addEventListener('click', () => switchView('results'));
         document.getElementById('back-to-dash').addEventListener('click', () => switchView('dash'));
@@ -163,12 +212,10 @@
 
         function loadQuestion() {
             if (currentIdx >= quizQuestions.length) {
-                // Quiz completed
-                quizView.innerHTML = `<h2>Quiz Completed!</h2><p>You have answered all questions.</p><button class="btn" onclick="switchView('results')">View Final Results</button>`;
+                switchView('results');
                 return;
             }
 
-            // Reset states
             document.getElementById('feedback').classList.add('hidden');
             document.getElementById('next-btn').classList.add('hidden');
             document.getElementById('submit-btn').classList.remove('hidden');
@@ -176,7 +223,6 @@
             let checkedRadio = document.querySelector('input[name="quiz-option"]:checked');
             if(checkedRadio) checkedRadio.checked = false;
 
-            // Load data
             const qData = quizQuestions[currentIdx];
             document.getElementById('progress-text').innerText = `Question ${currentIdx + 1} of ${quizQuestions.length}`;
             document.getElementById('question-text').innerText = qData.question;
@@ -196,10 +242,11 @@
             const currentAnswer = selected.value;
             const correctAnswer = quizQuestions[currentIdx].answer;
             const feedbackBox = document.getElementById('feedback');
+            const isCorrect = (currentAnswer === correctAnswer);
 
             feedbackBox.classList.remove('hidden', 'correct', 'wrong');
 
-            if (currentAnswer === correctAnswer) {
+            if (isCorrect) {
                 feedbackBox.innerText = "Correct answer!";
                 feedbackBox.classList.add('correct');
                 score++;
@@ -208,8 +255,14 @@
                 feedbackBox.classList.add('wrong');
             }
 
-            answersLogged++;
-            document.getElementById('submit-btn').add
+            userAnswers[currentIdx] = {
+                num: currentIdx + 1,
+                question: quizQuestions[currentIdx].question,
+                chosen: currentAnswer.toUpperCase(),
+                correct: correctAnswer.toUpperCase(),
+                status: isCorrect
+            };
+
             document.getElementById('submit-btn').classList.add('hidden');
             document.getElementById('next-btn').classList.remove('hidden');
         });
@@ -221,12 +274,36 @@
 
         function updateResultsDisplay() {
             const display = document.getElementById('score-display');
-            if (answersLogged === 0) {
+            const tableBody = document.getElementById('summary-table-body');
+            
+            if (userAnswers.length === 0) {
                 display.innerText = "No attempts recorded yet. Click 'Open Test Question' to get started!";
-            } else {
-                const percentage = Math.round((score / answersLogged) * 100);
-                display.innerHTML = `Completed: <strong>${answersLogged}</strong> questions.<br>Score: <strong>${score}</strong> correct.<br>Accuracy rate: <strong>${percentage}%</strong>`;
+                document.getElementById('review-section').classList.add('hidden');
+                return;
             }
+
+            document.getElementById('review-section').classList.remove('hidden');
+            const totalAttempted = userAnswers.filter(el => el !== undefined).length;
+            const percentage = Math.round((score / totalAttempted) * 100);
+            
+            display.innerHTML = `Completed: <strong>${totalAttempted} / ${quizQuestions.length}</strong> questions.<br>Score: <strong>${score}</strong> correct.<br>Accuracy rate: <strong>${percentage}%</strong>`;
+            
+            tableBody.innerHTML = "";
+            userAnswers.forEach((ans) => {
+                if(!ans) return;
+                const statusBadge = ans.status 
+                    ? `<span class="badge badge-success">Correct</span>` 
+                    : `<span class="badge badge-danger">Wrong</span>`;
+                
+                const row = `<tr>
+                    <td>${ans.num}</td>
+                    <td>${ans.question}</td>
+                    <td><strong>(${ans.chosen})</strong></td>
+                    <td><strong>(${ans.correct})</strong></td>
+                    <td>${statusBadge}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
         }
     </script>
 </body>
