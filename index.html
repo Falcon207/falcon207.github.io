@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard & Test Portal</title>
+    <title>Enterprise Test Portal & Admin Control</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,7 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 90vh;
+            min-height: 95vh;
         }
         .card {
             background-color: white;
@@ -24,119 +24,109 @@
             width: 100%;
             box-sizing: border-box;
         }
-        .wide-card {
-            max-width: 900px;
+        .wide-card { max-width: 1000px; }
+        h1, h2, h3 { color: #1a2a3a; margin-top: 0; }
+        
+        /* Forms & Inputs */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
         }
-        h1, h2 {
-            color: #1a2a3a;
-            margin-top: 0;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
         }
-        .btn-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
+        input[type="text"], input[type="password"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
         }
+        
+        /* Buttons */
+        .btn-wrapper { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
         .btn {
             display: block;
-            padding: 15px 20px;
+            padding: 14px 20px;
             background-color: #0076ff;
             color: white;
-            text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             border: none;
             cursor: pointer;
             transition: background-color 0.2s;
             width: 100%;
+            text-align: center;
         }
         .btn:hover { background-color: #0056b3; }
         .btn-secondary { background-color: #28a745; }
         .btn-secondary:hover { background-color: #1e7e34; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-danger:hover { background-color: #bd2130; }
         .btn-back { background-color: #6c757d; margin-top: 20px; }
-        .btn-back:hover { background-color: #545b62; }
         
         .hidden { display: none !important; }
         
-        /* Quiz Styling */
-        .options-container {
-            margin: 20px 0;
-            text-align: left;
-        }
-        .option-label {
-            display: block;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .option-label:hover {
-            background-color: #e8f0fe;
-            border-color: #0076ff;
-        }
-        .option-label input {
-            margin-right: 10px;
-        }
-        #feedback {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            text-align: center;
-        }
-        .correct { background-color: #d4edda; color: #155724; }
-        .wrong { background-color: #f8d7da; color: #721c24; }
-        #progress-text {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        /* Summary Table Styling */
-        .summary-table {
+        /* Tables */
+        .admin-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: left;
         }
-        .summary-table th, .summary-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 15px;
+        .admin-table th, .admin-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
         }
-        .summary-table th {
-            background-color: #f8f9fa;
-            color: #1a2a3a;
-        }
-        .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
+        .admin-table th { background-color: #f8fafc; color: #334155; }
+        
+        /* Badges */
+        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
         .badge-success { background-color: #d4edda; color: #155724; }
         .badge-danger { background-color: #f8d7da; color: #721c24; }
+
+        .flex-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .flex-child { flex: 1; min-width: 280px; }
     </style>
 </head>
 <body>
 
-    <div id="dashboard-view" class="card">
-        <h1>Student Dashboard</h1>
-        <div class="btn-wrapper">
-            <button class="btn" id="openQuestions">Open Test Question</button>
-            <button class="btn btn-secondary" id="checkResults">Check My Results</button>
+    <div id="login-view" class="card">
+        <h1>System Login</h1>
+        <p style="color:#64748b; margin-bottom:20px;">Access your student account or administrative control panel.</p>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="login-username" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="Enter password">
+        </div>
+        <button class="btn" id="btn-login">Sign In</button>
+        <div style="margin-top:15px; font-size:12px; color:#94a3b8; text-align:center;">
+            Default Admin credentials: <strong>admin</strong> / <strong>admin123</strong>
         </div>
     </div>
 
-    <div id="quiz-view" class="card">
+    <div id="dashboard-view" class="card hidden">
+        <h1>Welcome, <span id="student-name-display">Student</span>!</h1>
+        <p id="access-expiry-notice" style="font-size:14px; color:#ef4444; font-weight:600;"></p>
+        <div class="btn-wrapper">
+            <button class="btn" id="openQuestions">Open Test Section</button>
+            <button class="btn btn-secondary" id="checkResults">Check My Results</button>
+            <button class="btn btn-back" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="card hidden">
         <div id="progress-text">Question 1 of 17</div>
-        <h2 id="question-text">Loading...</h2>
+        <h2 id="question-text">Loading question text...</h2>
         
         <div class="options-container">
             <label class="option-label"><input type="radio" name="quiz-option" value="a"> (A) <span id="opt-a">Option A</span></label>
@@ -144,74 +134,175 @@
             <label class="option-label"><input type="radio" name="quiz-option" value="c"> (C) <span id="opt-c">Option C</span></label>
             <label class="option-label"><input type="radio" name="quiz-option" value="d"> (D) <span id="opt-d">Option D</span></label>
         </div>
-
         <div id="feedback" class="hidden"></div>
-
         <button class="btn" id="submit-btn">Submit Answer</button>
         <button class="btn btn-secondary hidden" id="next-btn">Next Question</button>
     </div>
 
     <div id="results-view" class="card wide-card hidden">
         <h2>Your Performance Profile</h2>
-        <p style="font-size: 18px; margin: 10px 0;" id="score-display">You haven't taken the test yet.</p>
+        <p style="font-size: 18px; margin: 10px 0;" id="score-display">No attempts recorded yet.</p>
         
         <div id="review-section">
-            <h3>Question-by-Question Review Summary</h3>
-            <table class="summary-table">
+            <h3>Question-by-Question Review</h3>
+            <table class="admin-table">
                 <thead>
                     <tr>
-                        <th style="width: 5%">#</th>
-                        <th style="width: 55%">Question</th>
-                        <th style="width: 15%">Your Answer</th>
-                        <th style="width: 15%">Correct Answer</th>
-                        <th style="width: 10%">Status</th>
+                        <th>#</th>
+                        <th>Question</th>
+                        <th>Your Answer</th>
+                        <th>Correct Answer</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
-                <tbody id="summary-table-body">
-                    </tbody>
+                <tbody id="summary-table-body"></tbody>
             </table>
         </div>
-
         <button class="btn btn-back" id="back-to-dash">Back to Dashboard</button>
+    </div>
+
+    <div id="admin-view" class="card wide-card hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Administrative Control Dashboard</h1>
+            <button class="btn btn-danger" style="width:auto; padding:8px 15px;" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="flex-container" style="margin-top:20px;">
+            <div class="flex-child" style="background:#f8fafc; padding:20px; border-radius:8px;">
+                <h3>User Management Operations</h3>
+                <div class="form-group">
+                    <label>Target Username</label>
+                    <input type="text" id="admin-user-name" placeholder="e.g. student1">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="admin-user-pass" placeholder="Password value">
+                </div>
+                <div class="form-group">
+                    <label>Access Limit (Minutes)</label>
+                    <input type="number" id="admin-user-time" value="60" min="1">
+                </div>
+                <button class="btn btn-secondary" style="margin-bottom:10px;" id="admin-create-user">Create / Update User</button>
+                <button class="btn btn-back" style="width:100%; margin:0;" id="admin-reset-pass">Reset Selected User Password</button>
+            </div>
+
+            <div class="flex-child">
+                <h3>System Users Directory</h3>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Perms</th>
+                            <th>Time Left</th>
+                            <th>Last Score</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-directory-body"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script src="questions.js"></script>
     <script>
+        // System Data Layer Mock
+        let usersDB = {
+            "admin": { password: "admin123", role: "admin" },
+            "student1": { password: "password123", role: "student", permitted: true, duration: 60, startTime: null, score: null, logs: [] }
+        };
+
+        let currentUser = null;
         let currentIdx = 0;
-        let score = 0;
-        let userAnswers = [];
+        let currentQuizScore = 0;
+        let localUserAnswers = [];
 
-        const dashView = document.getElementById('dashboard-view');
-        const quizView = document.getElementById('quiz-view');
-        const resultsView = document.getElementById('results-view');
+        // Authentication Controller
+        document.getElementById('btn-login').addEventListener('click', () => {
+            const u = document.getElementById('login-username').value.trim();
+            const p = document.getElementById('login-password').value;
 
-        // Initial setup
-        dashView.classList.remove('hidden');
-        quizView.classList.add('hidden');
-        resultsView.classList.add('hidden');
+            if (usersDB[u] && usersDB[u].password === p) {
+                currentUser = u;
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                
+                if (usersDB[u].role === 'admin') {
+                    switchView('admin');
+                } else {
+                    // Check access permission and time window expiration
+                    if (!usersDB[u].permitted) {
+                        alert("Your test permissions have been revoked by the Administrator.");
+                        return;
+                    }
+                    if (usersDB[u].startTime === null) {
+                        usersDB[u].startTime = Date.now();
+                    }
+                    const dynamicElapsed = (Date.now() - usersDB[u].startTime) / 60000;
+                    if (dynamicElapsed >= usersDB[u].duration) {
+                        alert("Your specific access window duration has expired.");
+                        usersDB[u].permitted = false;
+                        return;
+                    }
+                    switchView('student-dash');
+                }
+            } else {
+                alert("Invalid configuration profile credentials entered.");
+            }
+        });
 
-        document.getElementById('openQuestions').addEventListener('click', () => switchView('quiz'));
-        document.getElementById('checkResults').addEventListener('click', () => switchView('results'));
-        document.getElementById('back-to-dash').addEventListener('click', () => switchView('dash'));
+        function logout() {
+            currentUser = null;
+            switchView('login');
+        }
 
         function switchView(view) {
-            dashView.classList.add('hidden');
-            quizView.classList.add('hidden');
-            resultsView.classList.add('hidden');
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
 
-            if (view === 'dash') dashView.classList.remove('hidden');
+            if (view === 'login') document.getElementById('login-view').classList.remove('hidden');
+            if (view === 'admin') {
+                document.getElementById('admin-view').classList.remove('hidden');
+                renderAdminDirectory();
+            }
+            if (view === 'student-dash') {
+                document.getElementById('dashboard-view').classList.remove('hidden');
+                document.getElementById('student-name-display').innerText = currentUser;
+                
+                // Track expiration counter
+                const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
+                const remaining = Math.max(0, Math.ceil(usersDB[currentUser].duration - timePassed));
+                document.getElementById('access-expiry-notice').innerText = `Remaining Access Session Time: ${remaining} Minute(s)`;
+            }
             if (view === 'quiz') {
-                quizView.classList.remove('hidden');
+                // Runtime protection validation check
+                const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
+                if(timePassed >= usersDB[currentUser].duration || !usersDB[currentUser].permitted) {
+                    alert("Your time slot session just ran out!");
+                    logout();
+                    return;
+                }
+                document.getElementById('quiz-view').classList.remove('hidden');
                 loadQuestion();
             }
             if (view === 'results') {
-                resultsView.classList.remove('hidden');
-                updateResultsDisplay();
+                document.getElementById('results-view').classList.remove('hidden');
+                renderResultsDisplay();
             }
         }
 
+        // Quiz Machinery Engine Loop
+        document.getElementById('openQuestions').addEventListener('click', () => switchView('quiz'));
+        document.getElementById('checkResults').addEventListener('click', () => switchView('results'));
+        document.getElementById('back-to-dash').addEventListener('click', () => switchView('student-dash'));
+
         function loadQuestion() {
             if (currentIdx >= quizQuestions.length) {
+                usersDB[currentUser].score = currentQuizScore;
+                usersDB[currentUser].logs = [...localUserAnswers];
                 switchView('results');
                 return;
             }
@@ -234,75 +325,127 @@
 
         document.getElementById('submit-btn').addEventListener('click', () => {
             const selected = document.querySelector('input[name="quiz-option"]:checked');
-            if (!selected) {
-                alert("Please select an answer choice before submitting!");
-                return;
-            }
+            if (!selected) { alert("Select option field!"); return; }
 
             const currentAnswer = selected.value;
             const correctAnswer = quizQuestions[currentIdx].answer;
-            const feedbackBox = document.getElementById('feedback');
             const isCorrect = (currentAnswer === correctAnswer);
+            const fb = document.getElementById('feedback');
 
-            feedbackBox.classList.remove('hidden', 'correct', 'wrong');
-
+            fb.classList.remove('hidden', 'correct', 'wrong');
             if (isCorrect) {
-                feedbackBox.innerText = "Correct answer!";
-                feedbackBox.classList.add('correct');
-                score++;
+                fb.innerText = "Correct answer!"; fb.classList.add('correct'); currentQuizScore++;
             } else {
-                feedbackBox.innerText = `Incorrect. The correct answer was (${correctAnswer.toUpperCase()})`;
-                feedbackBox.classList.add('wrong');
+                fb.innerText = `Incorrect. The correct answer was (${correctAnswer.toUpperCase()})`; fb.classList.add('wrong');
             }
 
-            userAnswers[currentIdx] = {
+            localUserAnswers[currentIdx] = {
                 num: currentIdx + 1,
                 question: quizQuestions[currentIdx].question,
                 chosen: currentAnswer.toUpperCase(),
                 correct: correctAnswer.toUpperCase(),
                 status: isCorrect
             };
-
             document.getElementById('submit-btn').classList.add('hidden');
             document.getElementById('next-btn').classList.remove('hidden');
         });
 
-        document.getElementById('next-btn').addEventListener('click', () => {
-            currentIdx++;
-            loadQuestion();
-        });
+        document.getElementById('next-btn').addEventListener('click', () => { currentIdx++; loadQuestion(); });
 
-        function updateResultsDisplay() {
-            const display = document.getElementById('score-display');
-            const tableBody = document.getElementById('summary-table-body');
-            
-            if (userAnswers.length === 0) {
-                display.innerText = "No attempts recorded yet. Click 'Open Test Question' to get started!";
+        function renderResultsDisplay() {
+            const disp = document.getElementById('score-display');
+            const tbody = document.getElementById('summary-table-body');
+            const targetArray = (usersDB[currentUser].logs.length > 0) ? usersDB[currentUser].logs : localUserAnswers;
+
+            if (targetArray.length === 0) {
+                disp.innerText = "No data logged yet.";
                 document.getElementById('review-section').classList.add('hidden');
                 return;
             }
-
             document.getElementById('review-section').classList.remove('hidden');
-            const totalAttempted = userAnswers.filter(el => el !== undefined).length;
-            const percentage = Math.round((score / totalAttempted) * 100);
-            
-            display.innerHTML = `Completed: <strong>${totalAttempted} / ${quizQuestions.length}</strong> questions.<br>Score: <strong>${score}</strong> correct.<br>Accuracy rate: <strong>${percentage}%</strong>`;
-            
-            tableBody.innerHTML = "";
-            userAnswers.forEach((ans) => {
+            const pct = Math.round((usersDB[currentUser].score / targetArray.length) * 100);
+            disp.innerHTML = `Final Score Metric: <strong>${usersDB[currentUser].score} / ${quizQuestions.length}</strong> correct (${pct}%)`;
+
+            tbody.innerHTML = "";
+            targetArray.forEach(ans => {
                 if(!ans) return;
-                const statusBadge = ans.status 
-                    ? `<span class="badge badge-success">Correct</span>` 
-                    : `<span class="badge badge-danger">Wrong</span>`;
-                
-                const row = `<tr>
+                tbody.innerHTML += `<tr>
                     <td>${ans.num}</td>
                     <td>${ans.question}</td>
                     <td><strong>(${ans.chosen})</strong></td>
                     <td><strong>(${ans.correct})</strong></td>
-                    <td>${statusBadge}</td>
+                    <td><span class="badge ${ans.status?'badge-success':'badge-danger'}">${ans.status?'Correct':'Wrong'}</span></td>
                 </tr>`;
-                tableBody.innerHTML += row;
+            });
+        }
+
+        // Administrator Logic Layer Engine 
+        document.getElementById('admin-create-user').addEventListener('click', () => {
+            const username = document.getElementById('admin-user-name').value.trim();
+            const pass = document.getElementById('admin-user-pass').value;
+            const mins = parseInt(document.getElementById('admin-user-time').value) || 60;
+
+            if(!username || !pass) { alert("Fill out input metrics completely."); return; }
+            
+            usersDB[username] = {
+                password: pass,
+                role: "student",
+                permitted: true,
+                duration: mins,
+                startTime: null,
+                score: null,
+                logs: []
+            };
+            alert(`User '${username}' configured successfully.`);
+            renderAdminDirectory();
+        });
+
+        document.getElementById('admin-reset-pass').addEventListener('click', () => {
+            const username = document.getElementById('admin-user-name').value.trim();
+            const pass = document.getElementById('admin-user-pass').value;
+            if(!usersDB[username]) { alert("Target username structure missing."); return; }
+            usersDB[username].password = pass;
+            alert(`Password updated for user account '${username}'.`);
+        });
+
+        function toggleAccess(user) {
+            usersDB[user].permitted = !usersDB[user].permitted;
+            renderAdminDirectory();
+        }
+
+        function viewUserResults(user) {
+            if (usersDB[user].score === null) { alert("This student profile has not submitted test entries yet."); return; }
+            alert(`User Score Log summary: ${usersDB[user].score} correct.`);
+        }
+
+        function renderAdminDirectory() {
+            const tbody = document.getElementById('admin-directory-body');
+            tbody.innerHTML = "";
+            Object.keys(usersDB).forEach(key => {
+                if(usersDB[key].role === 'admin') return;
+                const uData = usersDB[key];
+                
+                let timeString = "Not Started";
+                if(uData.startTime) {
+                    const elapsed = (Date.now() - uData.startTime) / 60000;
+                    timeString = elapsed >= uData.duration ? "Expired" : `${Math.ceil(uData.duration - elapsed)} mins left`;
+                } else {
+                    timeString = `${uData.duration} mins allocation`;
+                }
+
+                const scoreString = uData.score !== null ? `${uData.score} Correct` : "Pending";
+                const pBadge = uData.permitted ? `<span class="badge badge-success">Active</span>` : `<span class="badge badge-danger">Blocked</span>`;
+
+                tbody.innerHTML += `<tr>
+                    <td><strong>${key}</strong></td>
+                    <td>${pBadge}</td>
+                    <td>${timeString}</td>
+                    <td>${scoreString}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; display:inline; width:auto; margin-right:5px;" onclick="toggleAccess('${key}')">Toggle Access</button>
+                        <button class="btn" style="padding:4px 8px; font-size:11px; display:inline; width:auto;" onclick="viewUserResults('${key}')">View Log</button>
+                    </td>
+                </tr>`;
             });
         }
     </script>
