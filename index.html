@@ -788,7 +788,7 @@
         // TRIGGER NEW FRESH ATTEMPT
         document.getElementById('openQuestions').addEventListener('click', () => {
             currentIdx = 0;
-            localUserAnswers = []; // Fresh array map allocation instantiation
+            localUserAnswers = []; 
             switchView('quiz');
         });
         
@@ -817,9 +817,14 @@
             toggleOptionVisibility('opt-c', qData.c);
             toggleOptionVisibility('opt-d', qData.d);
             
+            // Clear prior selection bindings
+            let checkedRadio = document.querySelector('input[name="quiz-option"]:checked');
+            if(checkedRadio) checkedRadio.checked = false;
+
             if (localUserAnswers[currentIdx]) {
                 const saved = localUserAnswers[currentIdx];
-                document.querySelector(`input[name="quiz-option"][value="${saved.chosen.toLowerCase()}"]`).checked = true;
+                const matchingRadio = document.querySelector(`input[name="quiz-option"][value="${saved.chosen.toLowerCase()}"]`);
+                if(matchingRadio) matchingRadio.checked = true;
                 
                 const fb = document.getElementById('feedback');
                 fb.classList.remove('hidden', 'correct', 'wrong');
@@ -834,8 +839,6 @@
                 document.getElementById('feedback').classList.add('hidden');
                 document.getElementById('submit-btn').disabled = false;
                 document.getElementById('quiz-next-btn').disabled = true;
-                let checkedRadio = document.querySelector('input[name="quiz-option"]:checked');
-                if(checkedRadio) checkedRadio.checked = false;
             }
         }
 
@@ -942,7 +945,9 @@
             }
 
             attempts.forEach((att, idx) => {
-                const passed = att.score > 50; 
+                // Pass metric: Pass if score >= 50% of total questions
+                const pct = (att.score / att.totalQuestions) * 100;
+                const passed = pct >= 50; 
                 const statusBadge = passed ? `<span class="badge badge-success">Pass</span>` : `<span class="badge badge-danger">Fail</span>`;
                 
                 tbody.innerHTML += `<tr class="clickable-row" onclick="viewDetailedTestReport(${idx})">
@@ -1009,7 +1014,7 @@
                 permitted: true,
                 duration: calculatedMinutes,
                 startTime: null,
-                attempts: [] // Clean history layout index maps
+                attempts: [] 
             };
 
             try {
