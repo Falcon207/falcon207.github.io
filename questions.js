@@ -158,7 +158,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "a",
-        "image": "Images/20.jpg"
+        "image": "20.jpeg"
     },
     {
         "question": "O sinal de mudança de direção para a esquerda, do veículo que segue à frente, \npode indicar:",
@@ -167,7 +167,7 @@ const quizQuestions = [
         "c": "Início de uma ultrapassagem.",
         "d": "",
         "answer": "c",
-        "image": "Images/21.jpg"
+        "image": "21.jpeg"
     },
     {
         "question": "Pode ultrapassar o veículo que circula à frente?",
@@ -176,7 +176,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b",
-        "image": "Images/22.jpg"
+        "image": "22.jpeg"
     },
     {
         "question": "Pode ultrapassar o veículo à sua frente?",
