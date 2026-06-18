@@ -280,6 +280,21 @@
             border-top: 1px solid var(--border);
         }
 
+        /* IMAGES STYLING */
+        .quiz-image-container {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .quiz-image-preview {
+            max-width: 100%;
+            max-height: 350px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+        }
+
         /* SCREEN MATCHING POPUP DIALOG ARCHITECTURE */
         .modal-overlay {
             position: fixed;
@@ -317,50 +332,61 @@
             margin-bottom: 24px;
         }
         .success-circle-icon {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             background-color: #f0fdf4;
             border: 2px solid #22c55e;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: #15803d; font-weight: bold; font-size: 18px;
+            color: #15803d; font-weight: bold;
+            font-size: 18px;
             flex-shrink: 0; margin-top: 4px;
         }
         .modal-header-text h2 {
-            margin: 0 0 6px 0; font-size: 22px; color: #143519; font-weight: 600;
+            margin: 0 0 6px 0;
+            font-size: 22px; color: #143519; font-weight: 600;
         }
         .modal-header-text p {
-            margin: 0; font-size: 15px; color: #4a5d4e; line-height: 1.4;
+            margin: 0;
+            font-size: 15px; color: #4a5d4e; line-height: 1.4;
         }
 
         .credentials-section-title {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between; align-items: center; margin-bottom: 12px;
         }
         .credentials-section-title h3 {
-            margin: 0; font-size: 18px; color: #143519; font-weight: 600;
+            margin: 0;
+            font-size: 18px; color: #143519; font-weight: 600;
         }
         .btn-copy-v2 {
-            background-color: #ffffff; border: 1px solid #cce0d0; border-radius: 12px;
+            background-color: #ffffff;
+            border: 1px solid #cce0d0; border-radius: 12px;
             padding: 6px 14px; font-size: 14px; color: #2c4a30; font-weight: 500;
-            cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            cursor: pointer; display: inline-flex;
+            align-items: center; gap: 6px;
             transition: all 0.2s;
         }
         .btn-copy-v2:hover { background-color: #f4f9f5; border-color: #a8cbd0; }
 
         .credentials-display-block {
-            background-color: #f7fafd; border: 1px solid #e2eaf2; border-radius: 16px;
+            background-color: #f7fafd;
+            border: 1px solid #e2eaf2; border-radius: 16px;
             padding: 18px; font-family: monospace; font-size: 15px; color: #2d3748;
             line-height: 1.6; white-space: pre-wrap; margin-bottom: 24px;
         }
 
         .warning-notice-banner-v2 {
-            background-color: #fff6ee; border-radius: 14px; padding: 14px 16px;
+            background-color: #fff6ee;
+            border-radius: 14px; padding: 14px 16px;
             display: flex; gap: 10px; align-items: flex-start;
             color: #9a4714; font-size: 14.5px; line-height: 1.4; margin-bottom: 28px;
         }
         .warning-notice-banner-v2 span.icon { font-size: 16px; margin-top: 1px; }
 
         .btn-done-v2 {
-            width: fit-content; float: right; padding: 12px 28px;
+            width: fit-content;
+            float: right; padding: 12px 28px;
             background-color: #ea580c; color: white; border-radius: 12px;
             font-weight: 600; font-size: 15px; border: none; cursor: pointer;
             transition: background-color 0.2s;
@@ -429,6 +455,7 @@
                     <label>Username</label>
                     <input type="text" id="login-username" placeholder="Username">
                 </div>
+ 
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" id="login-password" placeholder="••••••••">
@@ -456,6 +483,11 @@
 
             <div id="quiz-view" class="card hidden" style="max-width: 800px; margin: 0 auto;">
                 <div id="progress-text" style="font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px;">Question 1 of 17</div>
+                
+                <div id="quiz-image-container" class="quiz-image-container hidden">
+                    <img id="quiz-question-image" src="" alt="Question Graphic" class="quiz-image-preview">
+                </div>
+
                 <h2 id="question-text" style="font-size: 20px; line-height: 1.5; margin-bottom: 25px;">Loading question content details...</h2>
                 
                 <div class="options-container">
@@ -466,7 +498,7 @@
                 </div>
                 
                 <div id="feedback" class="hidden"></div>
-                
+   
                 <button class="btn" style="width:100%; margin-top:20px;" id="submit-btn">Submit Choice</button>
                 
                 <div class="quiz-navigation-bar">
@@ -614,7 +646,6 @@
                 
                 document.getElementById('portal-sidebar').classList.remove('hidden');
                 document.getElementById('sidebar-user-fullname').innerText = usersDB[u].fullname;
-                
                 if (usersDB[u].role === 'admin') {
                     switchView('admin');
                 } else {
@@ -680,7 +711,6 @@
             document.getElementById('results-view').classList.add('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('admin-create-user-view').classList.add('hidden');
-
             if (view === 'login') document.getElementById('login-view').classList.remove('hidden');
             if (view === 'create-candidate-page') document.getElementById('admin-create-user-view').classList.remove('hidden');
             if (view === 'admin') {
@@ -695,7 +725,6 @@
                 
                 const timePassed = (Date.now() - usersDB[currentUser].startTime) / 60000;
                 const remaining = Math.max(0, Math.ceil(usersDB[currentUser].duration - timePassed));
-                
                 if(remaining > 1440) {
                     document.getElementById('access-expiry-notice').innerText = `Allocated Session Window Time Remaining: ${Math.round(remaining/1440)} Day(s)`;
                 } else {
@@ -733,11 +762,23 @@
             const qData = quizQuestions[currentIdx];
             document.getElementById('question-text').innerText = qData.question;
             
+            // UPDATED: Handle image checking and visualization conditionally
+            const imgContainer = document.getElementById('quiz-image-container');
+            const imgElement = document.getElementById('quiz-question-image');
+            
+            if (qData.image && qData.image.trim() !== "") {
+                imgElement.src = qData.image;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgElement.src = "";
+                imgContainer.classList.add('hidden');
+            }
+
             toggleOptionVisibility('opt-a', qData.a);
             toggleOptionVisibility('opt-b', qData.b);
             toggleOptionVisibility('opt-c', qData.c);
             toggleOptionVisibility('opt-d', qData.d);
-
+            
             if (localUserAnswers[currentIdx]) {
                 const saved = localUserAnswers[currentIdx];
                 document.querySelector(`input[name="quiz-option"][value="${saved.chosen.toLowerCase()}"]`).checked = true;
@@ -745,7 +786,8 @@
                 const fb = document.getElementById('feedback');
                 fb.classList.remove('hidden', 'correct', 'wrong');
                 if(saved.status) {
-                    fb.innerText = "Correct!"; fb.classList.add('correct');
+                    fb.innerText = "Correct!";
+                    fb.classList.add('correct');
                 } else {
                     fb.innerText = `Incorrect. The correct answer was (${saved.correct.toUpperCase()})`; fb.classList.add('wrong');
                 }
@@ -796,7 +838,6 @@
                 correct: correctAnswer.toUpperCase(),
                 status: isCorrect
             };
-
             document.getElementById('submit-btn').disabled = true;
             document.getElementById('quiz-next-btn').disabled = false;
         });
@@ -807,7 +848,6 @@
                 loadQuestion();
             }
         };
-
         document.getElementById('quiz-next-btn').onclick = function() {
             if (currentIdx < quizQuestions.length - 1) {
                 currentIdx++;
@@ -893,7 +933,6 @@
             const generatedPassword = generateRandomString(12, passwordPool);
             
             const calculatedMinutes = days * 24 * 60;
-
             usersDB[generatedUsername] = {
                 password: generatedPassword,
                 role: "student",
@@ -905,19 +944,15 @@
                 score: null,
                 logs: []
             };
-
             document.getElementById('admin-user-fullname').value = '';
             document.getElementById('admin-user-email').value = '';
             document.getElementById('admin-user-days').value = '1';
 
-            // Open the layout popup modal view
             openCredentialPopup(name, generatedUsername, generatedPassword);
         };
 
         function openCredentialPopup(name, username, password) {
             document.getElementById('modal-display-name').innerText = name;
-            
-            // Build the string block perfectly structured exactly like your request text guidelines
             const formattedBlockText = `Here are your credentials:\nusername: ${username}\npassword: ${password}`;
             document.getElementById('full-credentials-text-block').innerText = formattedBlockText;
             
@@ -926,7 +961,6 @@
 
         function copyAllCredentialsText() {
             const textBlock = document.getElementById('full-credentials-text-block').innerText;
-            
             navigator.clipboard.writeText(textBlock).then(() => {
                 alert("Credentials block copied to clipboard successfully!");
             }).catch(err => {
@@ -982,7 +1016,6 @@
                 }
 
                 const pBadge = uData.permitted ? `<span class="badge badge-success">Active</span>` : `<span class="badge badge-danger">Inactive</span>`;
-
                 tbody.innerHTML += `<tr>
                     <td>${uData.fullname} <br><small style="color:var(--text-muted);">${uData.email||''}</small></td>
                     <td><strong>${key}</strong></td>
