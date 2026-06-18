@@ -158,6 +158,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "a"
+      "image": "Images/20.jpg"
     },
     {
         "question": "O sinal de mudança de direção para a esquerda, do veículo que segue à frente, \npode indicar:",
@@ -166,6 +167,7 @@ const quizQuestions = [
         "c": "Início de uma ultrapassagem.",
         "d": "",
         "answer": "c"
+      "image": "Images/21.jpg"
     },
     {
         "question": "Pode ultrapassar o veículo que circula à frente?",
@@ -174,6 +176,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b"
+      "image": "Images/22.jpg"
     },
     {
         "question": "Pode ultrapassar o veículo à sua frente?",
@@ -182,6 +185,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b"
+      "image": "Images/23.jpeg"
     },
     {
         "question": "É permitido ultrapassar neste local?",
@@ -190,6 +194,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b"
+      "image": "Images/24.jpeg"
     },
     {
         "question": "O motociclo que transita na rotunda deve:",
@@ -198,6 +203,7 @@ const quizQuestions = [
         "c": "Ceder a passagem apenas aos veículos com motor que pretendam entrar na rotunda.",
         "d": "",
         "answer": "c"
+      "image": "Images/25.jpeg"
     },
     {
         "question": "Ao entrar numa rotunda deve:",
@@ -206,6 +212,7 @@ const quizQuestions = [
         "c": "Ceder passagem aos veículos que já circulam na rotunda.",
         "d": "",
         "answer": "c"
+      "image": "Images/26.jpeg"
     },
     {
         "question": "O motorista deve sinalizar a saída de uma rotunda:",
@@ -246,6 +253,7 @@ const quizQuestions = [
         "c": "Parar obrigatoriamente, porque pretendo entrar na rotunda.",
         "d": "",
         "answer": "a"
+      "image": "Images/31.jpeg"
     },
     {
         "question": "O condutor da bicicleta deve ceder a passagem?",
@@ -254,6 +262,7 @@ const quizQuestions = [
         "c": "Apenas se houver veículos à sua frente.",
         "d": "",
         "answer": "b"
+      "image": "Images/32.jpeg"
     },
     {
         "question": "A velocidade deve ser ajustada:",
@@ -294,6 +303,7 @@ const quizQuestions = [
         "c": "Moderar a velocidade e parar se necessário.",
         "d": "",
         "answer": "c"
+      "image": "Images/37.jpeg"
     },
     {
         "question": "Qual a velocidade máxima permitida a um automóvel ligeiro, dentro de uma \nlocalidade?",
@@ -310,6 +320,7 @@ const quizQuestions = [
         "c": "Sim, porque o pavimento está em boas condições.",
         "d": "",
         "answer": "a"
+      "image": "Images/39.jpeg"
     },
     {
         "question": "O que deve fazer perante um sinal de STOP?",
@@ -318,6 +329,7 @@ const quizQuestions = [
         "c": "Reduzir a velocidade",
         "d": "",
         "answer": "b"
+      "image": "Images/40.jpeg"
     },
     {
         "question": "Os sinais de proibição indicam:",
@@ -334,6 +346,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b"
+      "image": "Images/42.jpeg"
     },
     {
         "question": "O sinal indica:",
@@ -342,6 +355,7 @@ const quizQuestions = [
         "c": "Apenas paragem permitida.",
         "d": "",
         "answer": "a"
+      "image": "Images/43.jpeg"
     },
     {
         "question": "O sinal indica:",
@@ -350,6 +364,7 @@ const quizQuestions = [
         "c": "Entrada num parque de estacionamento.",
         "d": "",
         "answer": "b"
+      "image": "Images/44.jpeg"
     },
     {
         "question": "O sinal com luz amarela está intermitente, pelo que o motorista:",
@@ -358,6 +373,7 @@ const quizQuestions = [
         "c": "Pode passar, mas com cuidado.",
         "d": "",
         "answer": "c"
+      "image": "Images/45.jpeg"
     },
     {
         "question": "O que deve respeitar em primeiro lugar?",
@@ -382,6 +398,7 @@ const quizQuestions = [
         "c": "Manter a velocidade.",
         "d": "",
         "answer": "a"
+      "image": "Images/48.jpeg"
     },
     {
         "question": "Quem deve avançar primeiro num cruzamento sem sinalização",
@@ -390,6 +407,7 @@ const quizQuestions = [
         "c": "O veículo que circula pela direita.",
         "d": "",
         "answer": "c"
+      "image": "Images/49.jpeg"
     },
     {
         "question": "Quando um peão atravessa numa passagem para peões, o motorista deve:",
@@ -398,6 +416,7 @@ const quizQuestions = [
         "c": "Parar e deixar o peão atravessar.",
         "d": "",
         "answer": "c"
+      "image": "Images/50.jpeg"
     },
     {
         "question": "O que o motorista deve fazer ao sair de um caminho particular?",
@@ -406,6 +425,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "a"
+      "image": "Images/51.jpeg"
     },
     {
         "question": "No próximo entroncamento, o motorista deve ceder a passagem?",
@@ -414,6 +434,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b"
+      "image": "Images/52.jpeg"
     },
     {
         "question": "Perante este sinal, o motorista deve:",
@@ -422,6 +443,7 @@ const quizQuestions = [
         "c": "",
         "d": "",
         "answer": "b"
+      "image": "Images/53.jpeg"
     },
     {
         "question": "Qualquer veículo que saia de uma passagem de nível deve:",
@@ -430,6 +452,7 @@ const quizQuestions = [
         "c": "Parar em cima da passagem de nível.",
         "d": "",
         "answer": "a"
+      "image": "Images/54.jpeg"
     },
     {
         "question": "Ao encontrar este sinal, como deve proceder?",
@@ -438,6 +461,7 @@ const quizQuestions = [
         "c": "Ceder a passagem apenas aos veículos vindos da esquerda.",
         "d": "",
         "answer": "a"
+      "image": "Images/55.jpeg"
     },
     {
         "question": "Uma condução defensiva é:",
