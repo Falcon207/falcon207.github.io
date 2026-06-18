@@ -181,7 +181,7 @@ const quizQuestions = [
         "b": "Não.",
         "c": "",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/23.jpeg"
     },
     {
@@ -190,7 +190,7 @@ const quizQuestions = [
         "b": "Não.",
         "c": "",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/24.jpeg"
     },
     {
@@ -199,7 +199,7 @@ const quizQuestions = [
         "b": "Avançar.",
         "c": "Ceder a passagem apenas aos veículos com motor que pretendam entrar na rotunda.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
         "image": "Images/25.jpeg"
     },
     {
@@ -208,7 +208,7 @@ const quizQuestions = [
         "b": "Avançar em primeiro lugar, porque tem prioridade de passagem.",
         "c": "Ceder passagem aos veículos que já circulam na rotunda.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
         "image": "Images/26.jpeg"
     },
     {
@@ -249,7 +249,7 @@ const quizQuestions = [
         "b": "Avançar em primeiro lugar, por se apresentar pela direita.",
         "c": "Parar obrigatoriamente, porque pretendo entrar na rotunda.",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/31.jpeg"
     },
     {
@@ -258,7 +258,7 @@ const quizQuestions = [
         "b": "Não, porque a bicicleta circula na rotunda.",
         "c": "Apenas se houver veículos à sua frente.",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/32.jpeg"
     },
     {
@@ -299,7 +299,7 @@ const quizQuestions = [
         "b": "Aumentar um pouco a velocidade para evitar parar.",
         "c": "Moderar a velocidade e parar se necessário.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
         "image": "Images/37.jpeg"
     },
     {
@@ -316,7 +316,7 @@ const quizQuestions = [
         "b": "Sim, porque dentro das localidades esta é a velocidade mínima obrigatória.",
         "c": "Sim, porque o pavimento está em boas condições.",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/39.jpeg"
     },
     {
@@ -325,7 +325,7 @@ const quizQuestions = [
         "b": "Parar obrigatoriamente antes de avançar.",
         "c": "Reduzir a velocidade",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/40.jpeg"
     },
     {
@@ -342,7 +342,7 @@ const quizQuestions = [
         "b": "Não.",
         "c": "",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/42.jpeg"
     },
     {
@@ -351,7 +351,7 @@ const quizQuestions = [
         "b": "Estacionamento proibido.",
         "c": "Apenas paragem permitida.",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/43.jpeg"
     },
     {
@@ -360,7 +360,7 @@ const quizQuestions = [
         "b": "A existência de um túnel.",
         "c": "Entrada num parque de estacionamento.",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/44.jpeg"
     },
     {
@@ -369,7 +369,7 @@ const quizQuestions = [
         "b": "Deve acelerar.",
         "c": "Pode passar, mas com cuidado.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
         "image": "Images/45.jpeg"
     },
     {
@@ -394,7 +394,7 @@ const quizQuestions = [
         "b": "Avançar em primeiro lugar.",
         "c": "Manter a velocidade.",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/48.jpeg"
     },
     {
@@ -403,7 +403,7 @@ const quizQuestions = [
         "b": "O veículo que circula pela esquerda",
         "c": "O veículo que circula pela direita.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
         "image": "Images/49.jpeg"
     },
     {
@@ -412,7 +412,7 @@ const quizQuestions = [
         "b": "Acelerar para passar antes do peão",
         "c": "Parar e deixar o peão atravessar.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
         "image": "Images/50.jpeg"
     },
     {
@@ -421,7 +421,7 @@ const quizQuestions = [
         "b": "Avançar sem ceder passagem.",
         "c": "",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/51.jpeg"
     },
     {
@@ -430,7 +430,7 @@ const quizQuestions = [
         "b": "Não.",
         "c": "",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/52.jpeg"
     },
     {
@@ -439,7 +439,7 @@ const quizQuestions = [
         "b": "Ceder a passagem.",
         "c": "",
         "d": "",
-        "answer": "b"
+        "answer": "b",
         "image": "Images/53.jpeg"
     },
     {
@@ -448,7 +448,7 @@ const quizQuestions = [
         "b": "Deixar os outros passarem primeiro.",
         "c": "Parar em cima da passagem de nível.",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/54.jpeg"
     },
     {
@@ -457,7 +457,7 @@ const quizQuestions = [
         "b": "Ceder a passagem apenas aos veículos vindos da direita.",
         "c": "Ceder a passagem apenas aos veículos vindos da esquerda.",
         "d": "",
-        "answer": "a"
+        "answer": "a",
         "image": "Images/55.jpeg"
     },
     {
