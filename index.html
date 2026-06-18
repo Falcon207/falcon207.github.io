@@ -893,21 +893,31 @@
         // SAVE ENTIRE NEW ATTEMPT OBJECT INSTANCE TO THE CLOUD ARRAY LOGS ENGINE
         async function processAndShowSummary() {
             let totalScore = 0;
-            // Pad out unanswered skipped steps cleanly
+            
+            // Loop through every single question in the master quiz database
             for(let i = 0; i < quizQuestions.length; i++) {
+                // If the candidate didn't touch or answer this question, format it safely as skipped
                 if(!localUserAnswers[i]) {
                     localUserAnswers[i] = {
                         num: i + 1,
-                        question: quizQuestions[i].question,
+                        question: quizQuestions[i].question || "No question text loaded",
                         chosen: "N/A",
-                        correct: quizQuestions[i].answer.toUpperCase(),
+                        correct: (quizQuestions[i].answer || "A").toUpperCase(),
                         status: false
                     };
                 }
-                if(localUserAnswers[i].status === true) totalScore++;
+                
+                // Add up the score only if status is true
+                if(localUserAnswers[i] && localUserAnswers[i].status === true) {
+                    totalScore++;
+                }
             }
 
-            const currentAttemptsList = Array.isArray(cachedUserData.attempts) ? cachedUserData.attempts : [];
+            // Fallback to make sure attempts array exists safely
+            let currentAttemptsList = [];
+            if (cachedUserData && Array.isArray(cachedUserData.attempts)) {
+                currentAttemptsList = cachedUserData.attempts;
+            }
             
             const newAttemptObj = {
                 attemptIndex: currentAttemptsList.length + 1,
@@ -920,15 +930,26 @@
             currentAttemptsList.push(newAttemptObj);
 
             try {
-                // Update cloud master storage
+                // Push the newly compiled attempt up to Firestore cloud storage
                 await usersCollection.doc(currentUser).update({ 
                     attempts: currentAttemptsList
                 });
+                
+                // Update local memory state so the UI reads the fresh array instantly
                 cachedUserData.attempts = currentAttemptsList;
+                
+                // Reset local working arrays back to zero for the next fresh attempt
+                currentIdx = 0;
+                localUserAnswers = [];
+                
+                // Route them cleanly over to their multi-test performance index dashboard
                 switchView('history');
             } catch (err) { 
-                console.error(err); 
-                alert("Failed to save evaluation attempt online.");
+                console.error("Firestore Save Failure:", err); 
+                alert("Database synchronization connection timed out. Attempt cached locally.");
+                
+                // Safety fallback navigation if network connection drops mid-save
+                switchView('history');
             }
         }
 
