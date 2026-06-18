@@ -157,7 +157,8 @@ const quizQuestions = [
         "b": "Não.",
         "c": "",
         "d": "",
-        "answer": "a"
+        "answer": "a",
+        "image": "Images/20.jpg"
     },
     {
         "question": "O sinal de mudança de direção para a esquerda, do veículo que segue à frente, \npode indicar:",
@@ -165,7 +166,8 @@ const quizQuestions = [
         "b": "Início de manobra de marcha atrás.",
         "c": "Início de uma ultrapassagem.",
         "d": "",
-        "answer": "c"
+        "answer": "c",
+        "image": "Images/21.jpg"
     },
     {
         "question": "Pode ultrapassar o veículo que circula à frente?",
@@ -173,7 +175,8 @@ const quizQuestions = [
         "b": "Não, devo aguardar que o veículo termine a manobra.",
         "c": "",
         "d": "",
-        "answer": "b"
+        "answer": "b",
+        "image": "Images/22.jpg"
     },
     {
         "question": "Pode ultrapassar o veículo à sua frente?",
