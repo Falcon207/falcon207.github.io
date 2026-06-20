@@ -202,7 +202,7 @@ const quizQuestions = [
         "b": "Avançar.",
         "c": "Ceder a passagem apenas aos veículos com motor que pretendam entrar na rotunda.",
         "d": "",
-        "answer": "c",
+        "answer": "b",
         "image": "Images/25.jpeg"
     },
     {
@@ -311,7 +311,7 @@ const quizQuestions = [
         "b": "60 km/h",
         "c": "90 km/h",
         "d": "",
-        "answer": "b"
+        "answer": "a"
     },
     {
         "question": "Neste local, posso transitar a 50 Km/h?",
