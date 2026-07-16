@@ -172,7 +172,7 @@ const quizQuestions = [
     {
         "question": "Pode ultrapassar o veículo que circula à frente?",
         "a": "Sim, a manobra é permitida.",
-        "b": "Não, devo aguardar que o veículo termine a manobra.",
+        "b": " Não, devo aguardar que o veículo termine a manobra.",
         "c": "",
         "d": "",
         "answer": "b",
